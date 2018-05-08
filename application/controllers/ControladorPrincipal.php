@@ -2,9 +2,9 @@
 session_start(); //Se inicia una session, para poder usar el tipo de usuario y nombre a lo largo del proyecto
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-//WINDOWS:  require('C:\xampp\fpdf\fpdf.php'); //Libreria para la creación de PDF´s
-//UBUNTU:
-require('/opt/lampp/htdocs/fpdf/fpdf.php');
+//WINDOWS:
+ require('C:\xampp\fpdf\fpdf.php'); //Libreria para la creación de PDF´s
+//UBUNTU:require('/opt/lampp/htdocs/fpdf/fpdf.php');
 
 class PDF extends FPDF{ //Clase que extiende de FPDF,
 
@@ -240,12 +240,15 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 			$this->info[$i]['id_profesor'] = $this->ModelosP->ObtenNomProfe($this->info[$i]['id_profesor']);
 			$this->info[$i]['id_materia'] = $this->ModelosP->ObtenNomMateria($this->info[$i]['id_materia']);
 			$this->info[$i]['salon'] = $this->ModelosP->ObtenSalon($this->info[$i]['id_grupo']);
-			//Informacion de los flistamateriasHorarios
-			//$this->info2[$i]['salon'] = $this->ModelosP->ObtenSalon($this->info[$i]['id_grupo']);
+			$this->info[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->info[$i]['id_grupo']));
+			$this->info[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->info[$i]['id_grupo']));
+			$this->info[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->info[$i]['id_grupo']));
 		}
-		var_dump($this->info);
+		var_dump($this->info[2]['dias']);
+		var_dump($this->info[2]['h_i']);
+		var_dump($this->info[2]['h_f']);
 		die();
-		$this->load->view('VInscripGrupo', $this->info, $this->info2);
+		$this->load->view('VInscripGrupo', $this->info);
 	}
 
 	public function fInscribeAlu(){

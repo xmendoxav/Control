@@ -127,9 +127,9 @@
 		}
 
 		public function ObtenSalon($grupo){ //Funcion para obtener el salon (Le entra el id de grupo)
-			$query = "SELECT (id_salon) FROM horario WHERE id_grupo = '".$grupos."'";
+			$query = "SELECT (id_salon) FROM horario WHERE id_grupo = '".$grupo."'";
 			$resultado = ($this->db->query($query)->row_array());
-			$nomMate = $resultado['nom_materia'];
+			$nomMate = $resultado['id_salon'];
 			return $nomMate;
 
 		}
@@ -157,6 +157,27 @@
 			$query = "SELECT * FROM grupo";
 			$resultado = $this->db->query($query);
 			return $resultado->result_array();
+		}
+
+		public function ObtenDiasH($idGrupo){ //Funcion para obtener los dias en los que se da clase en cierto grupo 
+			$query = "SELECT (dia) FROM horario WHERE id_grupo = '".$idGrupo."'";
+			$resultado = ($this->db->query($query)->row_array());
+			$dias= $resultado['dia'];
+			return $dias;
+		}
+
+		public function ObtenH_I($idGrupo){ //Funcion para obtener los dias en los que se da clase en cierto grupo 
+			$query = "SELECT (h_i) FROM horario WHERE id_grupo = '".$idGrupo."'";
+			$resultado = ($this->db->query($query)->row_array());
+			$hi = $resultado['h_i'];
+			return $hi;
+		}
+
+		public function ObtenH_F($idGrupo){ //Funcion para obtener los dias en los que se da clase en cierto grupo 
+			$query = "SELECT (h_f) FROM horario WHERE id_grupo = '".$idGrupo."'";
+			$resultado = ($this->db->query($query)->row_array());
+			$hf = $resultado['h_f'];
+			return $hf;
 		}
 	}
 ?>

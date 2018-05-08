@@ -23,11 +23,15 @@
 			<?php
 				for ($i=0; $i < count($this->info); $i++) {?>
 				<tr>
-				 <td><input type="checkbox" value="<?php echo $this->info[$i]['id_materia'];?>, <?php echo $this->info[$i]['id_profesor'] ;?>, <?php echo $this->info[$i]['id_grupo'] ;?> " name="opt[]"></td>
+				 <td><input type="checkbox" value="<?php echo $this->info[$i]['id_materia'];?>, <?php echo $this->info[$i]['id_profesor'] ;?>, <?php echo $this->info[$i]['id_grupo'] ;?>, <?php echo $this->info[$i]['salon'];?> " name="opt[]"></td>
 				 <td><?php echo $this->info[$i]['id_materia'] ;?> </td>
 				 <td><?php echo $this->info[$i]['id_profesor'] ;?> </td>
 				 <td><?php echo $this->info[$i]['id_grupo'] ;?> </td>
 				 <td><?php echo $this->info[$i]['salon'] ;?> </td>
+				 <td> <!--Horario (Dias horas se pintan de una manera diferente)-->
+				 	Hola <br>
+				 	Hola2				 	
+				 </td>
 			<?php } ?>
 				</tr>
   	</table>
