@@ -93,11 +93,11 @@
 				return $resultado->result_array();
 			}else{ //Si el ID es diferente de cero, se obtienen todas las materias de el profesor con ese ID, como no hay una relacion directa entre materias y los profesores, se hacen varias cosillas
 				$query1 = "SELECT (id_materia) FROM grupo WHERE id_profesor='".$idProfe."'"; //Obtiene el ID de las materias con el id del profesor
-				$idMaterias = ($this->db->query($query1))->result_array(); //Se hace el query y se guarda en un vector de vectores
-				//Ahora que se tienen los id´s de las materias que da ese profe, hay que obtener el nombre de las materias 
+				$idMaterias = ($this->db->query($query1)->result_array()); //Se hace el query y se guarda en un vector de vectores
+				//Ahora que se tienen los id´s de las materias que da ese profe, hay que obtener el nombre de las materias
 				//Como los id´s estan en un vector: se hace un cichlo para que en cada ieracion obtenga el nombre de una materia, con un id del vector.
 				$nomMaterias[]=array();
-				for ($i=0; $i < count($idMaterias); $i++) { 
+				for ($i=0; $i < count($idMaterias); $i++) {
 					$query2 = "SELECT nom_materia FROM materia WHERE id_materia = '".$idMaterias[$i]['id_materia']."'";
 					$resultado2 = ($this->db->query($query2)->row_array());
 					$nomMaterias[$i] = $resultado2['nom_materia'];
@@ -124,6 +124,14 @@
 			$resultado = ($this->db->query($query)->row_array());
 			$nomMate = $resultado['nom_materia'];
 			return $nomMate;
+		}
+
+		public function ObtenSalon($grupo){ //Funcion para obtener el salon (Le entra el id de grupo)
+			$query = "SELECT (id_salon) FROM horario WHERE id_grupo = '".$grupos."'";
+			$resultado = ($this->db->query($query)->row_array());
+			$nomMate = $resultado['nom_materia'];
+			return $nomMate;
+
 		}
 
 		public function LastId($nomTabla, $nomAtributo){ //Funcion que retorna el ultimo Id de la columna y tabla especificada

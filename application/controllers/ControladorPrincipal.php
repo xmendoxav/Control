@@ -2,11 +2,11 @@
 session_start(); //Se inicia una session, para poder usar el tipo de usuario y nombre a lo largo del proyecto
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-//WINDOWS:  
-require('C:\xampp\fpdf\fpdf.php'); //Libreria para la creación de PDF´s
-//UBUNTU: require('/opt/lampp/htdocs/fpdf/fpdf.php');
+//WINDOWS:  require('C:\xampp\fpdf\fpdf.php'); //Libreria para la creación de PDF´s
+//UBUNTU:
+require('/opt/lampp/htdocs/fpdf/fpdf.php');
 
-class PDF extends FPDF{ //Clase que extiende de FPDF, 
+class PDF extends FPDF{ //Clase que extiende de FPDF,
 
 	function Header(){ //Header de los PDF´s
 		$this->SetFont('Times','I',12);
@@ -66,11 +66,11 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 			$_SESSION["S_period"]=$period;
 
 			//Una vez obtenido el tipo de USUARIO se cargaran las diferentes vistas para cada uno de estos
-			if($tUser == 'Administrador'){ 
+			if($tUser == 'Administrador'){
 				$this->load->view('Vadministrador'); //Cargar vista de  Administrador
-			}elseif($tUser == 'Docente') { 
+			}elseif($tUser == 'Docente') {
 				$this->load->view('Vprofesor'); //Cargar vista de  profesor
-			}else{ 
+			}else{
 				$this->load->view('Valumno'); //Cargar vista de Alumno
 			}
 
@@ -82,7 +82,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function fAgregaCarrera(){ //Funcion para CARGAR la vista para agregar una CARRERA
-		$this->load->view('VagregaCarrera'); //Cargar la vista para agregar una carrera	
+		$this->load->view('VagregaCarrera'); //Cargar la vista para agregar una carrera
 	}
 
 	public function fAddCarrera(){ //Funncion para agregar UNA CARRERA
@@ -97,7 +97,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function fAgregaAdmin(){ //Funcion para agregar un administrador (solo a la tabla de usuarios)
-		$usr = strtoupper($this->input->post('name')); 
+		$usr = strtoupper($this->input->post('name'));
 		$psw = strtoupper($this->input->post('psw'));
 		$type = $this->input->post('type');
 		//Se agrega a la base de datos
@@ -110,7 +110,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function fAgregaDocen(){ //Funcion para agregar un Docente
-		$usr = strtoupper($this->input->post('name')); 
+		$usr = strtoupper($this->input->post('name'));
 		$psw = strtoupper($this->input->post('psw'));
 		$type = $this->input->post('type');
 		//Se agrega a la base de datos
@@ -124,7 +124,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function fAgregaAlumno(){ //Funcion para agregar un Alumno
-		$usr = strtoupper($this->input->post('name')); 
+		$usr = strtoupper($this->input->post('name'));
 		$psw = strtoupper($this->input->post('psw'));
 		$plan = ($this->input->post('plan'));
 		$type = $this->input->post('type');
@@ -188,7 +188,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$idMateria = $this->ModelosP->ObtenIdMateria($materia);
 		//Insertar el grupo y el horario.
 		//El horario (Dias y horas) están en un vector, una para cada uno, se harán arreglos para poder insertarse en la base de datos.
-		
+
 		$dias = implode(",", $dias); //Se une el vector en un String separado por comas
 		$H_I = implode(",", $H_I); //Lo mismo con la hora inicial
 		$H_F = implode(",", $H_F); //Lo mismo con la hora final
@@ -230,18 +230,28 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function cargaVInscrGrupo(){ //Funcion para hacer una inscripción a un grupo
-		//Se necesitan varias cosas para cargar esa vista: 
+		//Se necesitan varias cosas para cargar esa vista:
 		//Primero se obtiene la info de los grupos que hay (Materias, profesores, horarios)
 		//Para que pueda elegir el alumno a cual inscribirse
 		$this->info = $this->ModelosP->obtenInfoGrupos();
 
 		//Como la tabla contiene id´s y nos interesan los nombres, se modificaran los arreglos obtenidos.
-		for ($i=0; $i < count($this->info); $i++) { 
+		for ($i=0; $i < count($this->info); $i++) {
 			$this->info[$i]['id_profesor'] = $this->ModelosP->ObtenNomProfe($this->info[$i]['id_profesor']);
 			$this->info[$i]['id_materia'] = $this->ModelosP->ObtenNomMateria($this->info[$i]['id_materia']);
+			$this->info[$i]['salon'] = $this->ModelosP->ObtenSalon($this->info[$i]['id_grupo']);
+			//Informacion de los flistamateriasHorarios
+			//$this->info2[$i]['salon'] = $this->ModelosP->ObtenSalon($this->info[$i]['id_grupo']);
 		}
+		var_dump($this->info);
+		die();
+		$this->load->view('VInscripGrupo', $this->info, $this->info2);
+	}
 
-		$this->load->view('VInscripGrupo');
+	public function fInscribeAlu(){
+		$opciones = $this->input->post('opt');
+		var_dump($opciones);
+		die();
 	}
 
 	public function frepoInscrip(){ //Reporte de INSCRIPCIONES
