@@ -2,9 +2,9 @@
 session_start(); //Se inicia una session, para poder usar el tipo de usuario y nombre a lo largo del proyecto
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-//WINDOWS:
- require('C:\xampp\fpdf\fpdf.php'); //Libreria para la creación de PDF´s
-//UBUNTU:require('/opt/lampp/htdocs/fpdf/fpdf.php');
+//WINDOWS: require('C:\xampp\fpdf\fpdf.php'); //Libreria para la creación de PDF´s
+//UBUNTU:
+require('/opt/lampp/htdocs/fpdf/fpdf.php');
 
 class PDF extends FPDF{ //Clase que extiende de FPDF,
 
@@ -29,6 +29,10 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		parent:: __construct();
 		$this->load->model('ModelosP');
 	}
+
+  public function fRestaura(){ //Función para restaurar la base de datos
+
+  }
 
 	public function login(){ //Funcion que carga el Login principal
 		$this->load->view('Vlogin');
@@ -80,6 +84,11 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	public function fCargaVadministrador(){ //Funcion para cargar la vista de adminsitrador
 		$this->load->view('Vadministrador'); //Cargar vista de  Administrador
 	}
+
+  public function fCargaVAlu(){ //Funcion para cargar la vista de adminsitrador
+		$this->load->view('Valumno'); //Cargar vista de  Administrador
+	}
+
 
 	public function fAgregaCarrera(){ //Funcion para CARGAR la vista para agregar una CARRERA
 		$this->load->view('VagregaCarrera'); //Cargar la vista para agregar una carrera
@@ -156,6 +165,9 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$this->materias = $this->ModelosP->obtenMaterias(0);
 		//Obtener los alumnos
 		$this->Alumnos = $this->ModelosP->obtenAlumnos();
+
+    //var_dump($this->salones);
+    //die();
 
 		//Ya se tiene todos los catalogos en esas variables, solo queda enviarsela a una vista que despliegue los que el usuario quiera en ese momoento
 		$this->load->view('VshowCatalogos', $this->tExamenes, $this->salones, $this->carreras, $this->planes, $this->profesores, $this->materias, $this->Alumnos);
@@ -244,17 +256,22 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 			$this->info[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->info[$i]['id_grupo']));
 			$this->info[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->info[$i]['id_grupo']));
 		}
-		var_dump($this->info[2]['dias']);
-		var_dump($this->info[2]['h_i']);
-		var_dump($this->info[2]['h_f']);
-		die();
+		//var_dump($this->info[2]['dias'][0]);
+		//var_dump($this->info[2]['h_i'][0]);
+		//var_dump($this->info[2]['h_f'][0]);
+		//die();
 		$this->load->view('VInscripGrupo', $this->info);
 	}
 
 	public function fInscribeAlu(){
-		$opciones = $this->input->post('opt');
-		var_dump($opciones);
-		die();
+		$opt = $this->input->post('opt');
+		$idAlu = $this->ModelosP->ObtenIdAlumno($_SESSION["S_usr"]);
+		//Seprar la info obtenida por la vista de inscripción
+    for ($i=0; $i < count($opt) ; $i++) {
+      $this->infoInscri[$i] = explode(",", $opt[$i]);
+      $this->ModelosP->AgregaInscriAlu($this->infoInscri[$i][2], $idAlu);
+    }
+    $this->load->view('VaddDoneAlu');
 	}
 
 	public function frepoInscrip(){ //Reporte de INSCRIPCIONES

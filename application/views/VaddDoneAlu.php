@@ -21,13 +21,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 </head>
 <body>
-<form method= "post" action="fCargaVadministrador">
+<form method= "post" action="fCargaVAlu">
 	<h1 align="center">¡ÉXITO! :D</h1>
 	<table align="center">
 		<tr>
 			<td style="padding:10px;">
-				<input type="submit" value="Regresar"> 
-  	  		</td> 
+				<input type="submit" value="Regresar">
+  	  		</td>
  </form>
 </tr>
 </table>

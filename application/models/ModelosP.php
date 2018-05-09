@@ -159,25 +159,37 @@
 			return $resultado->result_array();
 		}
 
-		public function ObtenDiasH($idGrupo){ //Funcion para obtener los dias en los que se da clase en cierto grupo 
+		public function ObtenDiasH($idGrupo){ //Funcion para obtener los dias en los que se da clase en cierto grupo
 			$query = "SELECT (dia) FROM horario WHERE id_grupo = '".$idGrupo."'";
 			$resultado = ($this->db->query($query)->row_array());
 			$dias= $resultado['dia'];
 			return $dias;
 		}
 
-		public function ObtenH_I($idGrupo){ //Funcion para obtener los dias en los que se da clase en cierto grupo 
+		public function ObtenH_I($idGrupo){ //Funcion para obtener los dias en los que se da clase en cierto grupo
 			$query = "SELECT (h_i) FROM horario WHERE id_grupo = '".$idGrupo."'";
 			$resultado = ($this->db->query($query)->row_array());
 			$hi = $resultado['h_i'];
 			return $hi;
 		}
 
-		public function ObtenH_F($idGrupo){ //Funcion para obtener los dias en los que se da clase en cierto grupo 
+		public function ObtenH_F($idGrupo){ //Funcion para obtener los dias en los que se da clase en cierto grupo
 			$query = "SELECT (h_f) FROM horario WHERE id_grupo = '".$idGrupo."'";
 			$resultado = ($this->db->query($query)->row_array());
 			$hf = $resultado['h_f'];
 			return $hf;
+		}
+
+		public function ObtenIdAlumno($nom){ //Función para obtener el Id de un alumno (con su nombre)
+			$query = "SELECT (id_alumno) FROM alumno WHERE nom_alumno = '".$nom."'";
+			$resultado = ($this->db->query($query)->row_array());
+			$idAlu = $resultado['id_alumno'];
+			return $idAlu;
+		}
+
+		public function AgregaInscriAlu($idGrupo, $idAlu){ //Función para agregar la Inscripción de un alumno
+			$query="INSERT INTO ins_alu_grupo (id_grupo, id_alumno) VALUES('".$idGrupo."','".$idAlu."')";
+			$resultado = $this->db->query($query);
 		}
 	}
 ?>

@@ -36,6 +36,10 @@
 		<input type="submit" value="Reporte Salon" style="margin-top: 10px; width: 115px;" >
 	</form>
 
+	<form action="fRestaura">
+		<input type="submit" value="Restaurar Base" style="margin-top: 20px; width: 115px;" >
+	</form>
+
 	<form action="fsalir" method="post">
 		<input type="submit" value="Salir" style="margin-top: 20px; width: 115px;" >
 	</form>
