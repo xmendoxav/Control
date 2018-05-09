@@ -214,6 +214,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function fRegistraCalif(){ //Funcion para registras calificaciones
+		
 
 	}
 
@@ -272,4 +273,5 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	public function fRepoSalon(){ //Reporte de Salon (Administrador)
 
 	}
+
 }
