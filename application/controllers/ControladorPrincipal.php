@@ -208,7 +208,16 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	public function fcargaVregistroCalif(){ //Funcion para cargar la vista para registrar calificaciones
 		//La vista de registro de calificaciones necesita de varios parametros. Primero obtener esos parametros.
 		$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]); //Obtiene el id del profe (usando su nombre)
-		$this->materiasProfe = $this->ModelosP->obtenMaterias($idProfe); //Obtiene las materias de un profe
+		$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe); //Obtiene las materias de un profe
+		//var_dump($materiasProfe);
+		/*for ($i=0; $i<($materiasProfe); $i++){
+			$aux = $materiasProfe[$i];
+			$materia = $aux['id_materia'];
+			$grupos = $aux['id_grupo'];
+		}
+		$envio['id_materias'] = $materia;
+		$envio['id_grupos'] = $grupos;
+		*/
 
 		$this->load->view('VRegisCalif', $this->materiasProfe); //Se carga la vista con los datos necesarios
 	}
@@ -245,20 +254,17 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 			$this->info[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->info[$i]['id_grupo']));
 			$this->info[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->info[$i]['id_grupo']));
 		}
-		//var_dump($this->info[2]['dias'][0]);
-		//var_dump($this->info[2]['h_i'][0]);
-		//var_dump($this->info[2]['h_f'][0]);
-		//die();
+		var_dump($this->info[2]['dias']);
+		var_dump($this->info[2]['h_i']);
+		var_dump($this->info[2]['h_f']);
+		die();
 		$this->load->view('VInscripGrupo', $this->info);
 	}
 
 	public function fInscribeAlu(){
-		$opt = $this->input->post('opt');
-		$idAlu = $this->ModelosP->ObtenIdAlumno($_SESSION["S_usr"]);
-		var_dump($opt);
+		$opciones = $this->input->post('opt');
+		var_dump($opciones);
 		die();
-		$this->ModelosP->AgregaInscriAlu($opt[2], $idAlu);
-		
 	}
 
 	public function frepoInscrip(){ //Reporte de INSCRIPCIONES
