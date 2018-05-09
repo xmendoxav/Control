@@ -29,8 +29,11 @@
 				 <td><?php echo $this->info[$i]['id_grupo'] ;?> </td>
 				 <td><?php echo $this->info[$i]['salon'] ;?> </td>
 				 <td> <!--Horario (Dias horas se pintan de una manera diferente)-->
-				 	Hola <br>
-				 	Hola2				 	
+				 	<?php
+				 	for ($j=0; $j < count($this->info[$i]['dias']); $j++) {?>
+				 		<?php echo $this->info[$i]['dias'][$j];?>---<?php echo $this->info[$i]['h_i'][$j];?>---<?php echo $this->info[$i]['h_f'][$j];?><br>
+				 		
+				 	<?php } ?>
 				 </td>
 			<?php } ?>
 				</tr>

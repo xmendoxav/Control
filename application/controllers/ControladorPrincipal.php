@@ -244,17 +244,20 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 			$this->info[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->info[$i]['id_grupo']));
 			$this->info[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->info[$i]['id_grupo']));
 		}
-		var_dump($this->info[2]['dias']);
-		var_dump($this->info[2]['h_i']);
-		var_dump($this->info[2]['h_f']);
-		die();
+		//var_dump($this->info[2]['dias'][0]);
+		//var_dump($this->info[2]['h_i'][0]);
+		//var_dump($this->info[2]['h_f'][0]);
+		//die();
 		$this->load->view('VInscripGrupo', $this->info);
 	}
 
 	public function fInscribeAlu(){
-		$opciones = $this->input->post('opt');
-		var_dump($opciones);
+		$opt = $this->input->post('opt');
+		$idAlu = $this->ModelosP->ObtenIdAlumno($_SESSION["S_usr"]);
+		var_dump($opt);
 		die();
+		$this->ModelosP->AgregaInscriAlu($opt[2], $idAlu);
+		
 	}
 
 	public function frepoInscrip(){ //Reporte de INSCRIPCIONES

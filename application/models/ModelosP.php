@@ -179,5 +179,16 @@
 			$hf = $resultado['h_f'];
 			return $hf;
 		}
+
+		public function ObtenIdAlumno($nom){ //Función para obtener el Id de un alumno (con su nombre)
+			$query = "SELECT (id_alumno) FROM alumno WHERE nom_alumno = '".$nom."'";
+			$resultado = ($this->db->query($query)->row_array());
+			$idAlu = $resultado['id_alumno'];
+			return $idAlu;
+		}
+
+		public function AgregaInscriAlu(){ //Función para agregar la Inscripción de un alumno
+
+		}
 	}
 ?>
