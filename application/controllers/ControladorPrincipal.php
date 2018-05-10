@@ -220,12 +220,22 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	public function fcargaVregistroCalif(){ //Funcion para cargar la vista para registrar calificaciones
 		//La vista de registro de calificaciones necesita de varios parametros. Primero obtener esos parametros.
 		$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]); //Obtiene el id del profe (usando su nombre)
-		$this->materiasProfe = $this->ModelosP->obtenMaterias($idProfe); //Obtiene las materias de un profe
+		$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe); //Obtiene las materias de un profe
+		//var_dump($materiasProfe);
+		/*for ($i=0; $i<($materiasProfe); $i++){
+			$aux = $materiasProfe[$i];
+			$materia = $aux['id_materia'];
+			$grupos = $aux['id_grupo'];
+		}
+		$envio['id_materias'] = $materia;
+		$envio['id_grupos'] = $grupos;
+		*/
 
 		$this->load->view('VRegisCalif', $this->materiasProfe); //Se carga la vista con los datos necesarios
 	}
 
 	public function fRegistraCalif(){ //Funcion para registras calificaciones
+		
 
 	}
 
@@ -308,4 +318,5 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	public function fRepoSalon(){ //Reporte de Salon (Administrador)
 
 	}
+
 }

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,17 +110,17 @@ $('body').append(divValue);
 					<option class="form-control"></option>
 					<?php
 						for ($i=0; $i < count($this->materiasProfe); $i++) {?>
-						<option  class="form-control"><?php echo $this->materiasProfe[$i];?></option>
+						<option  class="form-control"><?php echo $this->materiasProfe[$i]['id_grupo']."-".$this->materiasProfe[$i]['nom_materia'];?></option>
 					<?php } ?>
   		     	</select>
   	  		</td>
-  	  		<td><label for="t_respaldo">Salón: </label></td>
+  	  		<td><label for="t_respaldo">Grupo: </label></td>
   	  		<td style="padding:10px;">
 				<select name="salon" id="salon" class="form-control" required>
 					<option class="form-control"></option>
 					<?php
-						for ($i=0; $i < count($this->salones); $i++) {?>
-						<option  class="form-control"><?php echo $this->salones[$i]['salon'] ;?></option>
+						for ($i=0; $i < count($this->materiasProfe); $i++) {?>
+						<option  class="form-control"><?php echo $this->materiasProfe[$i]['id_grupo'];?></option>
 					<?php } ?>
   		     	</select>
   	  		</td> 
@@ -154,3 +155,4 @@ $('body').append(divValue);
 
 </body>
 </html>
+

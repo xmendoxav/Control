@@ -31,8 +31,8 @@
 				 <td> <!--Horario (Dias horas se pintan de una manera diferente)-->
 				 	<?php
 				 	for ($j=0; $j < count($this->info[$i]['dias']); $j++) {?>
-				 		<?php echo $this->info[$i]['dias'][$j];?>     <?php echo $this->info[$i]['h_i'][$j];?>---<?php echo $this->info[$i]['h_f'][$j];?><br>
-
+				 		<?php echo $this->info[$i]['dias'][$j];?>---<?php echo $this->info[$i]['h_i'][$j];?>---<?php echo $this->info[$i]['h_f'][$j];?><br>
+				 		
 				 	<?php } ?>
 				 </td>
 			<?php } ?>
@@ -43,7 +43,7 @@
 		<input type="submit" value="Terminar" style="margin-top: 40px">
 	</form>
 
-	<form action="fCargaVAlu" method="post">
+	<form action="" method="post">
 		<input type="submit" value="Regresar" style="margin-top: 20px; width: 175px;" >
 	</form>
 
@@ -51,3 +51,4 @@
 
 </body>
 </html>
+>>>>>>> b3b017eced435087ec9e3885eda4a977680ee408

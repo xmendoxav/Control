@@ -102,8 +102,13 @@
 					$resultado2 = ($this->db->query($query2)->row_array());
 					$nomMaterias[$i] = $resultado2['nom_materia'];
 				}
-				return $nomMaterias; //Regresa ya el vector con el nombre de las materias
 			}
+		}
+		public function obtenMaterias2($idProfe){
+			$query = "SELECT grupo."."id_materia, id_grupo, materia."."nom_materia FROM grupo, materia WHERE grupo."."id_profesor ='".$idProfe."'and materia.id_materia = grupo.id_materia ";
+			$resultado = ($this->db->query($query)->result_array());
+			return $resultado;
+
 		}
 
 		public function obtenAlumnos(){ //Funcion para obtener los Alumnos
@@ -202,6 +207,6 @@
 			$query = "SELECT horario."."id_salon, nom_materia, grupo."."id_grupo, nom_profesor FROM horario, materia, grupo, alumno, ins_alu_grupo, profesor WHERE (horario."."id_grupo = grupo."."id_grupo AND materia."."id_materia = grupo."."id_materia AND alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_grupo = grupo."."id_grupo AND profesor."."id_profesor = grupo."."id_profesor AND alumno."."nom_alumno = '".$nom."')";
 			$resultado = ($this->db->query($query)->result_array());
 			return $resultado;
+
 		}
-	}
 ?>
