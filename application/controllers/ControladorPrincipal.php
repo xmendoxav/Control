@@ -2,9 +2,9 @@
 session_start(); //Se inicia una session, para poder usar el tipo de usuario y nombre a lo largo del proyecto
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-//WINDOWS: require('C:\xampp\fpdf\fpdf.php'); //Libreria para la creación de PDF´s
-//UBUNTU:
-require('/opt/lampp/htdocs/fpdf/fpdf.php');
+//WINDOWS:
+ require('C:\xampp\fpdf\fpdf.php'); //Libreria para la creación de PDF´s
+//UBUNTU: require('/opt/lampp/htdocs/fpdf/fpdf.php');
 
 class PDF extends FPDF{ //Clase que extiende de FPDF,
 
@@ -275,6 +275,25 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function frepoInscrip(){ //Reporte de INSCRIPCIONES
+    //Nombre, materias, profesor, grupo, periodo, plan estudio, horario, fecha
+
+    //Obtener la informacion para la tira de materias
+    $this->idAlu = $this->ModelosP->ObtenIdAlumno($_SESSION["S_usr"]);
+    $planCarrera= $this->ModelosP->ObtenMasInfo($_SESSION["S_usr"]);
+    $this->plan = $planCarrera['plan_estudio'];
+    $this->carrera = $planCarrera['nom_carrera'];
+
+    $this->tiraMaterias = $this->ModelosP->ObtenTiraMaterias($_SESSION["S_usr"]);
+
+		for ($i=0; $i < count($this->tiraMaterias); $i++) {
+			$this->info[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->tiraMaterias[$i]['id_grupo']));
+			$this->info[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->info[$i]['id_grupo']));
+			$this->info[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->info[$i]['id_grupo']));
+		}
+		//var_dump($this->tiraMaterias);
+		//die();
+
+		$this->load->view('VRepoInscri',$this->tiraMaterias, $this->idAlu, $this->plan, $this->carrera, $this->info);
 
 	}
 

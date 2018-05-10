@@ -191,5 +191,17 @@
 			$query="INSERT INTO ins_alu_grupo (id_grupo, id_alumno) VALUES('".$idGrupo."','".$idAlu."')";
 			$resultado = $this->db->query($query);
 		}
+
+		public function ObtenMasInfo($nom){ //Obtiene más informacion necesaria para los reportes del alumno (PLaN ESTUDIO, CARRERA)
+			$query = "SELECT plan_estudio, nom_carrera FROM plan_estudio, alumno, carrera WHERE (carrera."."id_carrera = plan_estudio."."id_carrera AND plan_estudio."."id_plan = alumno."."id_plan AND alumno."."nom_alumno = '".$nom."')";
+			$resultado = ($this->db->query($query)->row_array());
+			return $resultado;
+		}
+
+		public function ObtenTiraMaterias($nom){ //Obttiene la tira de Materias de un alumno (Materia)
+			$query = "SELECT horario."."id_salon, nom_materia, grupo."."id_grupo, nom_profesor FROM horario, materia, grupo, alumno, ins_alu_grupo, profesor WHERE (horario."."id_grupo = grupo."."id_grupo AND materia."."id_materia = grupo."."id_materia AND alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_grupo = grupo."."id_grupo AND profesor."."id_profesor = grupo."."id_profesor AND alumno."."nom_alumno = '".$nom."')";
+			$resultado = ($this->db->query($query)->result_array());
+			return $resultado;
+		}
 	}
 ?>
