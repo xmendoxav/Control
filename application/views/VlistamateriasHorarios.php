@@ -9,24 +9,22 @@
 </head>
 <body>
 <div align="center">
-	<h1>Alumno:  <?php echo $_SESSION["S_usr"]; ?> - - -  Id: <?php echo $this->idAlu; ?> - - - - Carrera: <?php echo $this->carrera;?> - - - - Plan: <?php echo $this->plan;?> - - - Periodo: <?php echo $_SESSION["S_period"]; ?> </h2>
-	<form action="fPDFInscribeAlu" method="post">
+	<h1>Profesor:  <?php echo $_SESSION["S_usr"]; ?> Periodo: <?php echo $_SESSION["S_period"]; ?> </h2>
+	<form action="fPDFMateriasHorarios" method="post">
 		<table align="center" class="table table-condensed">
 			<tr>
 				<th>Materia</th>
-				<th>Profesor</th>
 				<th>Grupo</th>
 				<th>Salón</th>
 				<th>Horario</th>
   	  </tr>
 			<?php
-				for ($i=0; $i < count($this->tiraMaterias); $i++) {?>
+				for ($i=0; $i < count($this->materiasProfe); $i++) {?>
 				<tr>
 
-				 <td><?php echo $this->tiraMaterias[$i]['nom_materia'] ;?> </td>
-         		 <td><?php echo $this->tiraMaterias[$i]['nom_profesor'] ;?> </td>
-				 <td><?php echo $this->tiraMaterias[$i]['id_grupo'] ;?> </td>
-        		 <td><?php echo $this->tiraMaterias[$i]['id_salon'] ;?> </td>
+				 <td><?php echo $this->materiasProfe[$i]['nom_materia'] ;?> </td>
+				 <td><?php echo $this->materiasProfe[$i]['id_grupo'] ;?> </td>
+        		 <td><?php echo $this->materiasProfe[$i]['id_salon'] ;?> </td>
 
 				 <td> <!--Horario (Dias horas se pintan de una manera diferente)-->
 				 	<?php

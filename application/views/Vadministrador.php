@@ -36,13 +36,24 @@
 		<input type="submit" value="Reporte Salon" style="margin-top: 10px; width: 115px;" >
 	</form>
 
-	<form action="fRestaura">
-		<input type="submit" value="Restaurar Base" style="margin-top: 20px; width: 115px;" >
+	<form action="fBackUp">
+		<input type="submit" value="Respaldar Base" style="margin-top: 20px; width: 115px; color: red" >
+	</form>
+
+	<form action="fRestore" method="post" >
+		<label style="margin-top: 20px; color: red" >Restaurar Base: </label><br>
+		<input type="file" value="Seleccionar Archivo ... " style=" width: 300px; color: red" name="file">
+		<input type="submit" value="Restaurar" style="margin-top: 10px; width: 125px; color: red" >
 	</form>
 
 	<form action="fsalir" method="post">
 		<input type="submit" value="Salir" style="margin-top: 20px; width: 115px;" >
 	</form>
+
+	<!--<form method="post" action="fRestore" enctype="multipart/form-data">
+    	<input type="file" name="archivo"><br>
+    	<input type="submit" value="Enviar">
+	</form-->
 
 </div>
 

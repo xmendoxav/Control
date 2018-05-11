@@ -5,6 +5,42 @@
 			$this->load->database();
 		}
 
+		public function backUpTotal(){ //Funcion para hacer un BackUp total de la base de datos
+			$dbname = 'controlescolar'; //Nombre de la base de datos a hacer el BackUp
+ 			$name_file = ($dbname. "_" .date("d-m-Y_H-i-s"). ".sql"); //El nombre del archivo tendra la fecha y la base a la que pertenece 
+
+ 			// PARA WINDOWS:
+ 			$comandoW = 'C:\xampp\mysql\bin\mysqldump -u root '; //Comando de Windows para ejecutar mysqldump
+ 			$path_fileW=($dbname.' > '.'C:\Users\eco-4\Desktop\RespaldoCE'.'\RT_');//Ruta del archivo donde se guardará el respaldo	
+  			$respuesta = exec($comandoW.$path_fileW.$name_file); 
+
+
+ 			//PARA UBUNTU: 
+ 			//$comandoU = '/opt/lampp/bin/mysqldump -u root ';
+ 			//$path_fileU = ($dbname.'>'.'/home/eco4109/Escritorio/respaldosBase/respaldosTotales/'."'$name_file'");
+ 			//$respuesta = exec($comandoU.$path_fileU.".sql");
+			///opt/lampp/bin/mysqldump -u root proyecto trabajadores > /home/eco4109/Escritorio/respaldosBase/respaldosTotales/respaldo.sql
+
+			//exec("intruccion para iniciar mysqldump", nombre_base>Direccion_y_nombre_del_respaldo.sql);
+ 			return $respuesta; //Se regresa el estado de la ejecucion, si es 0 se pudo hacer			
+		}
+
+		public function restore($nameBD){
+			set_time_limit(720);
+			//Corta el nombre(cuestiones de sintaxis, NO QUITAR, en uBuntu no hay problema)
+ 			$nameBD = substr($nameBD, 3);
+ 		
+ 			// PARA WINDOWS:
+ 			$respuesta = exec('C:\xampp\mysql\bin\mysql -u root controlescolar < C:\Users\eco-4\Desktop\RespaldoCE\RT_'.$nameBD); //Comando de Windows para ejecutar mysql (Restaurar la base de datos)
+ 			
+ 
+ 			//PARA UBUNTU: 
+			//exec('/opt/lampp/bin/mysql -u root CREATE database IF NOT EXISTS proyecto');
+ 			//$respuesta = exec("/opt/lampp/bin/mysql -u root proyecto < /home/eco4109/Escritorio/respaldosBases/respaldosTotales/".$nameBD);
+			//exec("intruccion para iniciar mysqldump", nombre_base>Direccion_y_nombre_del_respaldo.sql);
+ 			return $respuesta; //Se regresa el estado de la ejecucion, si es 0 se pudo hacer
+		}
+
 		public function verifyPsw($usr){ //Funcion para obtener la contraseña del usuario ingresado
 			$query = "SELECT (contraseña) FROM usuarios WHERE nombre = '".$usr."'";
 			$resultado = $this->db->query($query);
@@ -192,8 +228,8 @@
 			return $idAlu;
 		}
 
-		public function AgregaInscriAlu($idGrupo, $idAlu){ //Función para agregar la Inscripción de un alumno
-			$query="INSERT INTO ins_alu_grupo (id_grupo, id_alumno) VALUES('".$idGrupo."','".$idAlu."')";
+		public function AgregaInscriAlu($idGrupo, $idAlu, $periodo){ //Función para agregar la Inscripción de un alumno
+			$query="INSERT INTO ins_alu_grupo (id_grupo, id_alumno, periodo) VALUES('".$idGrupo."','".$idAlu."','".$periodo."')";
 			$resultado = $this->db->query($query);
 		}
 
@@ -203,10 +239,26 @@
 			return $resultado;
 		}
 
-		public function ObtenTiraMaterias($nom){ //Obttiene la tira de Materias de un alumno (Materia)
-			$query = "SELECT horario."."id_salon, nom_materia, grupo."."id_grupo, nom_profesor FROM horario, materia, grupo, alumno, ins_alu_grupo, profesor WHERE (horario."."id_grupo = grupo."."id_grupo AND materia."."id_materia = grupo."."id_materia AND alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_grupo = grupo."."id_grupo AND profesor."."id_profesor = grupo."."id_profesor AND alumno."."nom_alumno = '".$nom."')";
+		public function ObtenTiraMaterias($nom){ //Obttiene la tira de Materias de un alumno (POR PERIODO)
+			$query = "SELECT horario."."id_salon, nom_materia, grupo."."id_grupo, nom_profesor FROM horario, materia, grupo, alumno, ins_alu_grupo, profesor WHERE (horario."."id_grupo = grupo."."id_grupo AND materia."."id_materia = grupo."."id_materia AND alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_grupo = grupo."."id_grupo AND profesor."."id_profesor = grupo."."id_profesor AND ins_alu_grupo."."periodo = '".$_SESSION['S_period']."' AND alumno."."nom_alumno = '".$nom."')";
+
 			$resultado = ($this->db->query($query)->result_array());
 			return $resultado;
-
 		}
+
+		public function ObtenAllTiraMaterias($nom){ //Obttiene la tira de Materias de un alumno (TODAS)
+			$query = "SELECT horario."."id_salon, nom_materia, grupo."."id_grupo, nom_profesor FROM horario, materia, grupo, alumno, ins_alu_grupo, profesor WHERE (horario."."id_grupo = grupo."."id_grupo AND materia."."id_materia = grupo."."id_materia AND alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_grupo = grupo."."id_grupo AND profesor."."id_profesor = grupo."."id_profesor AND alumno."."nom_alumno = '".$nom."')";
+
+			$resultado = ($this->db->query($query)->result_array());
+			return $resultado;
+		}
+
+		public function ObtenAllMateriasProfe($nom){ //Obtiene todas las materias de un profesor
+			$query = "SELECT materia."."id_materia, horario."."id_salon, nom_materia, grupo."."id_grupo FROM horario, materia, grupo, profesor WHERE (profesor."."id_profesor = grupo."."id_profesor AND horario."."id_grupo = grupo."."id_grupo AND materia."."id_materia = grupo."."id_materia AND profesor."."nom_profesor = '".$nom."')";
+
+			$resultado = ($this->db->query($query)->result_array());
+			return $resultado;
+		}
+
+	}
 ?>
