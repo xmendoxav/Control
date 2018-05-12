@@ -8,7 +8,8 @@
 	<meta charset="utf-8">
 	<title>Profesor</title>
 </head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+
+<script type="text/javascript" src="/Proyecto/Control/js/jquery-3.3.1.min.js">
 </script>
 <script type="text/javascript">
 
@@ -92,12 +93,63 @@ $('body').append(divValue);
 
 }
 
+function hacer_click(){
+	var datos = document.getElementById('seleccion').value;
+	var profe = document.getElementById('profe').value;
+	//var id_materia = document.getElementById('materia').value;
+	//var id_grupo = document.getElementById('seleccion').value;
+	console.log(datos,profe);
+	$.ajax({
+        type: "GET",
+        url: "Control/application/controllers/ControladorPrincipal/obtenAlumnos",
+        contenttype: "application/json; charset=utf-8",
+        data: {
+        	'seleccion': 	datos,
+        	'profe'    : 	profe
+        },
+        success: function (result) {
+        	console.log("recibiendo");
+        	$('#resultado').html(response);
+            //Hacer algo con el resultado en caso que la petición haya sido exitosa
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+        	alert('error:'+jqXHR);
+            //Hacer algo con el resultado en caso que la petición haya fallado
+        }
+    });
+}
+
+$(document).ready(function(){
+	$("#boton").click(function(){
+		var profe = $('#profe').val();
+		var datos = $('#seleccion').val();
+		console.log(profe, datos);
+		$.post("Control/application/controllers/ControladorPrincipal/obtenAlumnos",{profesor: profe, datosGrupo:datos}, function(datos){
+			$("#resultado2").html(datos);
+		});
+	});
+});
+
+
+function mostrarAlumnos(){
+	var datos = document.getElementById('seleccion').value;
+	var profe = document.getElementById('profe').value;
+	$.ajax({
+		url:"http://localhost/Proyecto/Control/index.php/ControladorPrincipal/obtenAlumnos",
+		type:"POST",
+		data:{datosProfe:datos, profesor:profe}, 
+		success: function(respuesta){
+			alert(respuesta);
+		}
+	})
+
+}
 </script>
 <body>
 
 <div align="center">
 	<h1>Registrar Calificaciones</h1>
-	<form action="fRegistraCalif" method="post">
+	<form action="fRegistraCalif" method="post" id="formulario">
 		<table align="center">
 		<tr>
 			<td><label>Profesor: </label></td>
@@ -106,52 +158,25 @@ $('body').append(divValue);
   	  		</td>
   	  		<td><label>Materia: </label></td>
   	  		<td style="padding:10px;">
-				<select name="materia" id="materia" class="form-control" required>
-					<option class="form-control"></option>
+				<select id= "seleccion"name="materia" class="form-control" required>
+					
 					<?php
 						for ($i=0; $i < count($this->materiasProfe); $i++) {?>
-						<option  class="form-control"><?php echo $this->materiasProfe[$i]['id_grupo']."-".$this->materiasProfe[$i]['nom_materia'];?></option>
+						<option id="id_grupo" name="id_grupo" class="form-control"><?php echo $this->materiasProfe[$i]['id_grupo']."-".$this->materiasProfe[$i]['nom_materia'];?></option>
 					<?php } ?>
   		     	</select>
+  		     	<td><input type="button" value="Desplegar" id="hola" class="form-control" onclick="mostrarAlumnos()" /></td>
+  		     	<td><input type="button" value="Desplegar" id="boton" class="form-control" /></td>
+	        </form>
   	  		</td>
-  	  		<td><label for="t_respaldo">Grupo: </label></td>
-  	  		<td style="padding:10px;">
-				<select name="salon" id="salon" class="form-control" required>
-					<option class="form-control"></option>
-					<?php
-						for ($i=0; $i < count($this->materiasProfe); $i++) {?>
-						<option  class="form-control"><?php echo $this->materiasProfe[$i]['id_grupo'];?></option>
-					<?php } ?>
-  		     	</select>
-  	  		</td> 
   	  	</tr>
   	  </table>
-
-
-
-
-  	  <table align="center">
-  	  	<h1>Horario: </h1>
-  	  	<div class="content">
-  	  		<!-- Aqui es donde se van a colocar las cosas que aparecen al presionar el botón de agregar-->
-  	  	</div>
-
-  	  	<div id="main" align="center" style="margin-top: 40px;">
-  	  		<input type="button" id="btAdd" value="Añadir Día" class="bt" />
-  	  		<input type="button" id="btRemoveAll" value="Eliminar Todos" class="bt" /><br />
-  	  	</div>
-
-
-  	  </table>
-
-		<input type="submit" value="Crear" style="margin-top: 40px">
-	</form>
-
-	<form action="fCargaVadministrador" method="post">
-		<input type="submit" value="Regresar" style="margin-top: 20px; width: 175px;" >
-	</form>
-
 </div>
+<div id="resultado">pruebas</div>
+<div id="resultado2">pruebas</div>
+<table></table>
+
+
 
 </body>
 </html>
