@@ -43,7 +43,7 @@
 		<input type="submit" value="Terminar" style="margin-top: 40px">
 	</form>
 
-	<form action="" method="post">
+	<form action="fCargaVAlu" method="post">
 		<input type="submit" value="Regresar" style="margin-top: 20px; width: 175px;" >
 	</form>
 

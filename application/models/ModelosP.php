@@ -247,7 +247,7 @@
 		}
 
 		public function ObtenAllTiraMaterias($nom){ //Obttiene la tira de Materias de un alumno (TODAS)
-			$query = "SELECT horario."."id_salon, nom_materia, grupo."."id_grupo, nom_profesor FROM horario, materia, grupo, alumno, ins_alu_grupo, profesor WHERE (horario."."id_grupo = grupo."."id_grupo AND materia."."id_materia = grupo."."id_materia AND alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_grupo = grupo."."id_grupo AND profesor."."id_profesor = grupo."."id_profesor AND alumno."."nom_alumno = '".$nom."')";
+			$query = "SELECT calificacion."."calificacion, tipo_examen."."tipo_examen ,ins_alu_grupo."."periodo, horario."."id_salon, nom_materia, grupo."."id_grupo, nom_profesor FROM calificacion, tipo_examen, horario, materia, grupo, alumno, ins_alu_grupo, profesor WHERE ( ins_alu_grupo."."id_inscripcion = calificacion."."id_inscripcion AND tipo_examen."."id_tipo_examen = calificacion."."id_tipo_examen AND horario."."id_grupo = grupo."."id_grupo AND materia."."id_materia = grupo."."id_materia AND alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_grupo = grupo."."id_grupo AND profesor."."id_profesor = grupo."."id_profesor AND alumno."."nom_alumno = '".$nom."')";
 
 			$resultado = ($this->db->query($query)->result_array());
 			return $resultado;
@@ -258,6 +258,21 @@
 
 			$resultado = ($this->db->query($query)->result_array());
 			return $resultado;
+		}
+
+		public function ObtenMateriasPorfes($period){ //Funcion par obtener las materias_profes (De un periodo)
+			$query = "SELECT materia."."id_materia, materia."."nom_materia, profesor."."nom_profesor, grupo."."id_grupo FROM materia, profesor, grupo, ins_alu_grupo WHERE ( ins_alu_grupo."."id_grupo = grupo."."id_grupo AND profesor."."id_profesor = grupo."."id_profesor AND materia."."id_materia = grupo."."id_materia AND ins_alu_grupo."."periodo = '".$period."')";
+
+			$resultado = ($this->db->query($query)->result_array());
+			return $resultado;
+		}
+
+		public function ObtenInfoSalones($period){ //Funcion para obtener la ingo de los salones (por periodo) (Salon, materia, grupo, profesor, horario :C)
+			$query = "SELECT salon."."id_salon, materia."."nom_materia, profesor."."nom_profesor, grupo."."id_grupo FROM salon, ins_alu_grupo, materia, profesor, grupo, horario WHERE ( salon."."id_salon = horario."."id_salon AND profesor."."id_profesor = grupo."."id_profesor AND materia."."id_materia = grupo."."id_materia AND horario."."id_grupo = grupo."."id_grupo AND ins_alu_grupo."."id_grupo = grupo."."id_grupo AND ins_alu_grupo."."periodo = '".$period."')";
+
+			$resultado = ($this->db->query($query)->result_array());
+			return $resultado;
+
 		}
 
 	}

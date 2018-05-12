@@ -29,11 +29,23 @@
 	</form>
 
 	<form action="fRepoMateriasProfe" method="post">
-		<input type="submit" value="Reporte Materias/Profesor" style="margin-top: 10px; width: 115px;" >
+		<input type="submit" name="periodo" value="Reporte Materias/Profesor" style="margin-top: 10px; width: 135px;" >
+		<select name="periodo"  id="periodo" > 
+			<option selected >Periodo</option>
+			<option value="2018A" >2018A</option>
+			<option value="2017B" >2017B</option>
+			<option value="2017A" >2017A</option>
+		</select>
 	</form>
 
 	<form action="fRepoSalon" method="post">
-		<input type="submit" value="Reporte Salon" style="margin-top: 10px; width: 115px;" >
+		<input type="submit" value="Reporte Salon" style="margin-top: 10px; width: 135px;" >
+		<select name="periodo2"  id="periodo2" > 
+			<option selected >Periodo</option>
+			<option value="2018A" >2018A</option>
+			<option value="2017B" >2017B</option>
+			<option value="2017A" >2017A</option>
+		</select>
 	</form>
 
 	<form action="fBackUp">
