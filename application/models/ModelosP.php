@@ -200,6 +200,13 @@
 			return $resultado->result_array();
 		}
 
+		public function obtenInfoGruposProfe($nomProfe){ //Funcion para obtener la info  de los grupos (SOLO DEL PROFE INDICADO)
+			$query = "SELECT grupo."."id_grupo FROM grupo, profesor WHERE ( profesor."."id_profesor = grupo."."id_profesor AND profesor."."nom_profesor = '".$nomProfe."' )";
+			$resultado = $this->db->query($query);
+			return $resultado->result_array();
+		}
+
+
 		public function ObtenDiasH($idGrupo){ //Funcion para obtener los dias en los que se da clase en cierto grupo
 			$query = "SELECT (dia) FROM horario WHERE id_grupo = '".$idGrupo."'";
 			$resultado = ($this->db->query($query)->row_array());
@@ -284,8 +291,16 @@
 			$resultado = $resultado['id_grupo'];
 			return $resultado;
 		}
+
 		public function buscaIdAlumnos($id_grupo){
 			$query ="SELECT id_alumno FROM ins_alu_grupo WHERE id_grupo = '".$id_grupo."'"; 
+			$resultado = ($this->db->query($query)->result_array());
+			
+			return $resultado;
+		}
+
+		public function ObtenAlumnosGrupo($grupo){ //Obtiene los alumnos de un grupo especifico
+			$query ="SELECT alumno."."id_alumno, alumno."."nom_alumno FROM alumno, ins_alu_grupo WHERE ( alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_grupo = '".$grupo."' )"; 
 			$resultado = ($this->db->query($query)->result_array());
 			
 			return $resultado;

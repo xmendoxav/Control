@@ -27,7 +27,7 @@ if (iCnt <= 19) {
 iCnt = iCnt + 1;
 
 
-$(container).append('<tr><td>Día: <select class="form-control" name="dias[]" style="width: 130px" required ><option></option><option>Lunes</option><option>Martes</option><option>Miercoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option></select></td> <td>H.I: <input style="margin-left: 25px; width: 90px"  type="time" class="form-control" name="H_I[]" required ></td><td>H.F: <input style="margin-left: 25px; width: 90px" type="time" class="form-control" name="H_F[]" required ></td></tr>');
+$(container).append('<tr><td>Día: <select class="form-control" name="dias[]" style="width: 130px" required ><option></option><option>Lunes</option><option>Martes</option><option>Miercoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option></select></td> <td>H.I: <input style="margin-left: 25px; width: 125px"  type="time" class="form-control" name="H_I[]" required ></td><td>H.F: <input style="margin-left: 25px; width: 125px" type="time" class="form-control" name="H_F[]" required ></td></tr>');
 
 //<tr> <td> <label id=tb'+iCnt+' style="margin-left: 150px;" >Elige el producto: '+iCnt+' </label><select  class="form-control" name="dias[]"><option value="--" class="form-control">---</option></select></td> <td align="center" style="padding:10px;"> <label id=tb'+iCnt+' style="margin-left: 250px;" >Cantidad: </label> <input type="number"  style="margin-left: 250px;" min=1 class="form-control" name="cantArts[]"> </td> </tr>
 

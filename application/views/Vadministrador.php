@@ -62,11 +62,6 @@
 		<input type="submit" value="Salir" style="margin-top: 20px; width: 115px;" >
 	</form>
 
-	<!--<form method="post" action="fRestore" enctype="multipart/form-data">
-    	<input type="file" name="archivo"><br>
-    	<input type="submit" value="Enviar">
-	</form-->
-
 </div>
 
 </body>

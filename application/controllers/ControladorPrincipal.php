@@ -92,7 +92,9 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 				if($tUser == 'Administrador'){
 					$this->load->view('Vadministrador'); //Cargar vista de  Administrador
 				}elseif($tUser == 'Docente') {
-					$this->load->view('Vprofesor'); //Cargar vista de  profesor
+					//Para cargar la vista del profesor, necesitamos los grupos en la base
+					$this->grupos = $this->ModelosP->obtenInfoGruposProfe($_SESSION["S_usr"]);
+					$this->load->view('Vprofesor', $this->grupos); //Cargar vista de  profesor
 				}else{
 					$this->load->view('Valumno'); //Cargar vista de Alumno
 				}
@@ -110,7 +112,8 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function fCargaVProfe(){ //Funcion para cargar la vista del profesor
-		$this->load->view('Vprofesor');
+		$this->grupos = $this->ModelosP->obtenInfoGruposProfe($_SESSION["S_usr"]);
+		$this->load->view('Vprofesor', $this->grupos);
 	}
 
 
@@ -336,7 +339,42 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function flistaAlumnosGrupo(){ //Funcion para listar los ALUMNOS y GRUPOS
+		//Obtener el grupo del que se quiere el listado (se obtiene de la vista)
+		$grupo = $this->input->post('grupo');
+		$_SESSION['group'] = $grupo;
+		//Obtener los alumnos de ese grupo
+		$this->alumnos = $this->ModelosP->ObtenAlumnosGrupo($grupo);
+		//Cargar la vista para desplegar el reporte (Desde la vista se genera el PDF)
+		$this->load->view('VRepoAlumnosGrupo', $this->alumnos);
+	}
 
+	public function fPDFAlumnosGrupo(){ //Genera el PDF del reporte de arriba xD
+		$this->alumnos = $this->ModelosP->ObtenAlumnosGrupo($_SESSION['group']);
+		//Crear el PDF
+		$titulo = "Alumnos del grupo ".$_SESSION['group']." del Profesor: ".$_SESSION['S_usr'];
+
+		$pdf = new PDF('P', 'cm', 'a4');
+		$pdf->AddPage();
+		$pdf->SetFont('Times','BU',18);
+		$pdf->Cell(19,1,$titulo,0,0,'C');
+		$pdf->Ln(1);
+		$pdf->Ln(1);
+		$pdf->SetFont('Times','B',16);
+		$pdf->SetDrawColor(0,80,180);
+		$pdf->SetFillColor(430,430,10);
+		$pdf->SetLineWidth(0.08);
+		$pdf->Cell(3, 1, "Id Alumno", 1, 0, 'C');
+		$pdf->Cell(6, 1, "Nombre Alumno", 1, 0, 'C');
+
+		$pdf->Ln();
+		$pdf->SetFont('Times','',12);
+
+		for ($i=0; $i < count($this->alumnos); $i++) {
+			$pdf->Cell(3, 1, $this->alumnos[$i]["id_alumno"], 1, 0, 'C');
+			$pdf->Cell(6, 1, $this->alumnos[$i]["nom_alumno"], 1, 1, 'C');
+		}
+
+		$pdf->Output();
 	}
 
 	public function fRepoCalif(){ //Funcion para reporte de CALIFICACIONES (EL QUE GENERA EL PROFE)
