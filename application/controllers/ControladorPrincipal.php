@@ -22,7 +22,6 @@ class PDF extends FPDF{ //Clase que extiende de FPDF,
 	}
 
 }
-
 class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	public function __construct(){ //Definición del modelo
@@ -281,6 +280,21 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	public function fRepoSalon(){ //Reporte de Salon (Administrador)
 
+	}
+	public function obtenAlumnos(){
+		$profe = $this->input->post("profesor");
+		$datos = $this->input->post("datosProfe");
+		$id_grupo = explode("-", $datos);
+		$nombreGrupo = $id_grupo[1];
+		//$respuesta = $this->ModelosP->ObtenAlumnosProfeGrupo($profe, $datos);//en el modelo tenemos que regresar el valor como objeto; $respuetsa->result
+		//echo json_encode($respuesta);
+		$id_materia = $this->ModelosP->buscaidGrupo($nombreGrupo,$profe);
+		$id_profesor = $this->ModelosP->ObtenIdProfe($profe);
+		$id_alumnos = $this->ModelosP->buscaIdAlumnos($id_materia,$profe);
+		$alumnos = $this->ModelosP->buscaAlumosGrupo($id_profesor);
+
+		echo var_dump($alumnos);
+		//$datos['seleccion'] obtiene el valor ese merengues
 	}
 
 }
