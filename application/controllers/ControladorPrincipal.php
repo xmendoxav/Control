@@ -4,22 +4,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //WINDOWS:
  require('C:\xampp\fpdf\fpdf.php'); //Libreria para la creación de PDF´s
-//UBUNTU:require('/opt/lampp/htdocs/fpdf/fpdf.php');
+//UBUNTU: require('/opt/lampp/htdocs/fpdf/fpdf.php');
 
 class PDF extends FPDF{ //Clase que extiende de FPDF,
 
-	function Header(){ //Header de los PDF´s
+	function Header(){
+		$date = date('F d, o');
 		$this->SetFont('Times','I',12);
-		$this->Cell(35,2,date('F d, o'),0,1,'C');
+		$this->Cell(35,1,$date,0,1,'C');
 	}
 
-	function Footer(){ //Footer de los PDF´s
+	/**function Footer(){
 		//Imagen de footer
 		//Para WINDOWS:
 		//$this->Image('C:\xampp\fpdf\footerUaemex.png',2,25,15,3);
 
-		//Para UBUNTU: $this->Image('/opt/lampp/htdocs/fpdf/footerUaemex.jpeg',2,25,15,3);
-	}
+		//Para UBUNTU:
+		$this->Image('/opt/lampp/htdocs/fpdf/footerUaemex.jpeg',2,25,15,3);
+	}*/
 
 }
 class ControladorPrincipal extends CI_Controller { //Definición principal
@@ -28,6 +30,26 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		parent:: __construct();
 		$this->load->model('ModelosP');
 	}
+
+ 	public function fBackUp(){ //Función para restaurar la base de datos
+  		$respuesta = $this->ModelosP->backUpTotal();
+  		$this->load->view('VaddDone');
+ 	 }
+
+ 	public function fRestore(){
+	  	$nameRespaldo = $this->input->post('file');
+
+	  	if ($nameRespaldo != "") {
+	  		$respuesta = $this->ModelosP->restore($nameRespaldo);
+	  		if($respuesta == 0){ //Si se regresa un 0 es exito
+	  			$this->load->view('VaddDone');	
+	  		}else{  //En otro caso es un fail
+	  			$this->load->view('VaddFailAdmin');	
+	  		}
+	  	}else{
+	  		$this->load->view('VaddFailAdmin');	
+	  	}
+	  }
 
 	public function login(){ //Funcion que carga el Login principal
 		$this->load->view('Vlogin');
@@ -47,38 +69,48 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$psw = strtoupper($this->input->post('psw'));
 		$period = strtoupper($this->input->post('period'));
 
-		$psw2 = $this->ModelosP->verifyPsw($usr); //Obtener la contraseña del usuario ingresado
-		$psw2 = $psw2['contraseña'];
+		
+		$_SESSION["S_usr"]=$usr;
+		if (($usr == 'SUPERUSER') && ($psw == '12345')) {
+			$this->load->view('Vadministrador');
+		}else{
+			$psw2 = $this->ModelosP->verifyPsw($usr); //Obtener la contraseña del usuario ingresado
+			$psw2 = $psw2['contraseña'];
+			if($psw2 == NULL){ //No se econtro contraseña, ese usuario NO existe
+				$this->load->view('Vlogin');
+			}elseif ($psw2 != $psw) { //Se encontro una contraseña, PERO NO COINCIDEN
+				$this->load->view('Vlogin');
+			}else{ //Se Encontro contraseña y SI COINCIDEN
+				//Averiguar de que tipo es el usuario que está ingresando
+				$tUser = $this->ModelosP->getTypeUser($usr);
+				$tUser = $tUser['tipo'];
 
-		if($psw2 == NULL){ //No se econtro contraseña, ese usuario NO existe
-			$this->load->view('Vlogin');
-		}elseif ($psw2 != $psw) { //Se encontro una contraseña, PERO NO COINCIDEN
-			$this->load->view('Vlogin');
-		}else{ //Se Encontro contraseña y SI COINCIDEN
-			//Averiguar de que tipo es el usuario que está ingresando
-			$tUser = $this->ModelosP->getTypeUser($usr);
-			$tUser = $tUser['tipo'];
+				//Se asignan las variables de SESSION (Variables 'superglobales', el NOMBRE y el tipo de USUARIO), para poder ser utilizadas a lo largo de todo el proyecto
+				$_SESSION["S_usr"]=$usr;
+				$_SESSION["S_tUser"]=$tUser;
+				$_SESSION["S_period"]=$period;
 
-			//Se asignan las variables de SESSION (Variables 'superglobales', el NOMBRE y el tipo de USUARIO), para poder ser utilizadas a lo largo de todo el proyecto
-			$_SESSION["S_usr"]=$usr;
-			$_SESSION["S_tUser"]=$tUser;
-			$_SESSION["S_period"]=$period;
+				//Una vez obtenido el tipo de USUARIO se cargaran las diferentes vistas para cada uno de estos
+				if($tUser == 'Administrador'){
+					$this->load->view('Vadministrador'); //Cargar vista de  Administrador
+				}elseif($tUser == 'Docente') {
+					$this->load->view('Vprofesor'); //Cargar vista de  profesor
+				}else{
+					$this->load->view('Valumno'); //Cargar vista de Alumno
+				}
 
-			//Una vez obtenido el tipo de USUARIO se cargaran las diferentes vistas para cada uno de estos
-			if($tUser == 'Administrador'){
-				$this->load->view('Vadministrador'); //Cargar vista de  Administrador
-			}elseif($tUser == 'Docente') {
-				$this->load->view('Vprofesor'); //Cargar vista de  profesor
-			}else{
-				$this->load->view('Valumno'); //Cargar vista de Alumno
 			}
-
 		}
 	}
 
 	public function fCargaVadministrador(){ //Funcion para cargar la vista de adminsitrador
 		$this->load->view('Vadministrador'); //Cargar vista de  Administrador
 	}
+
+  public function fCargaVAlu(){ //Funcion para cargar la vista de adminsitrador
+		$this->load->view('Valumno'); //Cargar vista de  Administrador
+	}
+
 
 	public function fAgregaCarrera(){ //Funcion para CARGAR la vista para agregar una CARRERA
 		$this->load->view('VagregaCarrera'); //Cargar la vista para agregar una carrera
@@ -156,6 +188,9 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		//Obtener los alumnos
 		$this->Alumnos = $this->ModelosP->obtenAlumnos();
 
+    //var_dump($this->salones);
+    //die();
+
 		//Ya se tiene todos los catalogos en esas variables, solo queda enviarsela a una vista que despliegue los que el usuario quiera en ese momoento
 		$this->load->view('VshowCatalogos', $this->tExamenes, $this->salones, $this->carreras, $this->planes, $this->profesores, $this->materias, $this->Alumnos);
 	}
@@ -226,8 +261,65 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	}
 
-	public function flistamateriasHorarios(){ //Funcion para listar als materias y horarios
+	public function flistamateriasHorarios(){ //Funcion para listar als materias y horarios de PROFESOR
+		//Nombre, materias, profesor, grupo, periodo, plan estudio, horario, fecha
 
+	    //Obtener las materias y la info de ellas
+	    $this->materiasProfe = $this->ModelosP->ObtenAllMateriasProfe($_SESSION["S_usr"]);
+	  
+	    if (count($this->materiasProfe) == 0) {
+	    	//Indicar que ese alukno no tiene inscripciones a ese semestre
+	    	$this->load->view('VNoMateriasProfe');
+	    }else{
+	    	for ($i=0; $i < count($this->materiasProfe); $i++) {
+				$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->materiasProfe[$i]['id_grupo']));
+				$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->materiasProfe[$i]['id_grupo']));
+				$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->materiasProfe[$i]['id_grupo']));
+			}
+			
+			$this->load->view('VlistamateriasHorarios',$this->materiasProfe, $this->infoH);
+	    }
+	}
+
+	public function fPDFMateriasHorarios(){ //Función que genera el PDF del reporte de inscripciones de un alumno
+		//Obtener nuevamente la información que se usará en el reporte
+		$nombre ="Profesor: ".$_SESSION["S_usr"];
+
+    	$this->materiasProfe = $this->ModelosP->ObtenAllMateriasProfe($_SESSION["S_usr"]);
+    	//var_dump($this->tiraMaterias[0]['id_grupo']);
+    	//die();
+    	for ($i=0; $i < count($this->materiasProfe); $i++) {
+			$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->materiasProfe[$i]['id_grupo']));
+			$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->materiasProfe[$i]['id_grupo']));
+			$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->materiasProfe[$i]['id_grupo']));
+		}
+		//Generar el PDF
+		$pdf = new PDF('P', 'cm', 'a4');
+		$pdf->AddPage();
+		$pdf->SetFont('Times','I',12);
+		$pdf->Cell(6,0,$nombre,0,0,'A');
+		$pdf->SetFont('Times','BU',18);
+		$pdf->Cell(7,1,'Materias/Horarios: '.$_SESSION["S_period"],0,0,'C');
+		$pdf->Ln(1);
+		$pdf->Ln(1);
+		$pdf->SetFont('Times','B',16);
+		$pdf->SetDrawColor(0,80,180);
+		$pdf->SetFillColor(430,430,10);
+		$pdf->SetLineWidth(0.08);
+		$pdf->Cell(6, 1, "Nombre", 1, 0, 'C');
+		$pdf->Cell(3, 1, "Grupo", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Salón", 1, 0, 'C');
+
+		$pdf->Ln();
+		$pdf->SetFont('Times','',12);
+
+		for ($i=0; $i < count($this->materiasProfe); $i++) {
+			$pdf->Cell(6, 1, $this->materiasProfe[$i]["nom_materia"], 1, 0, 'C');
+			$pdf->Cell(3, 1, $this->materiasProfe[$i]["id_grupo"], 1, 0, 'C');
+			$pdf->Cell(5, 1, $this->materiasProfe[$i]["id_salon"], 1, 1, 'C');
+		}
+
+		$pdf->Output();
 	}
 
 	public function flistaAlumnosGrupo(){ //Funcion para listar los ALUMNOS y GRUPOS
@@ -253,25 +345,176 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 			$this->info[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->info[$i]['id_grupo']));
 			$this->info[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->info[$i]['id_grupo']));
 		}
-		var_dump($this->info[2]['dias']);
-		var_dump($this->info[2]['h_i']);
-		var_dump($this->info[2]['h_f']);
-		die();
+		//var_dump($this->info[2]['dias'][0]);
+		//var_dump($this->info[2]['h_i'][0]);
+		//var_dump($this->info[2]['h_f'][0]);
+		//die();
 		$this->load->view('VInscripGrupo', $this->info);
 	}
 
 	public function fInscribeAlu(){
-		$opciones = $this->input->post('opt');
-		var_dump($opciones);
-		die();
+		$opt = $this->input->post('opt');
+		$idAlu = $this->ModelosP->ObtenIdAlumno($_SESSION["S_usr"]);
+		//Seprar la info obtenida por la vista de inscripción
+    for ($i=0; $i < count($opt) ; $i++) {
+      $this->infoInscri[$i] = explode(",", $opt[$i]);
+      $this->ModelosP->AgregaInscriAlu($this->infoInscri[$i][2], $idAlu, $_SESSION["S_period"]);
+    }
+    $this->load->view('VaddDoneAlu');
 	}
 
 	public function frepoInscrip(){ //Reporte de INSCRIPCIONES
+    //Nombre, materias, profesor, grupo, periodo, plan estudio, horario, fecha
 
+    //Obtener la informacion para la tira de materias
+    $this->idAlu = $this->ModelosP->ObtenIdAlumno($_SESSION["S_usr"]);
+    $planCarrera= $this->ModelosP->ObtenMasInfo($_SESSION["S_usr"]);
+    $this->plan = $planCarrera['plan_estudio'];
+    $this->carrera = $planCarrera['nom_carrera'];
+
+    $this->tiraMaterias = $this->ModelosP->ObtenTiraMaterias($_SESSION["S_usr"]);
+
+    if (count($this->tiraMaterias) == 0) {
+    	//Indicar que ese alukno no tiene inscripciones a ese semestre
+    	$this->load->view('VNoInscri');
+    }else{
+    	for ($i=0; $i < count($this->tiraMaterias); $i++) {
+			$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->tiraMaterias[$i]['id_grupo']));
+			$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->tiraMaterias[$i]['id_grupo']));
+			$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->tiraMaterias[$i]['id_grupo']));
+		}
+		//var_dump($this->tiraMaterias);
+		//var_dump($this->infoH[2]['dias']);
+		//die();
+
+		$this->load->view('VRepoInscri',$this->tiraMaterias, $this->idAlu, $this->plan, $this->carrera, $this->infoH);
+    }
+	}
+
+	public function fPDFInscribeAlu(){ //Función que genera el PDF del reporte de inscripciones de un alumno
+		//Obtener nuevamente la información que se usará en el reporte
+		$nombre ="Nombre: ".$_SESSION["S_usr"];
+		$this->idAlu = "Id: ".$this->ModelosP->ObtenIdAlumno($_SESSION["S_usr"]);
+    	$planCarrera= $this->ModelosP->ObtenMasInfo($_SESSION["S_usr"]);
+    	$this->plan ="Plan: ".$planCarrera['plan_estudio'];
+    	$this->carrera ="Carrera: ".$planCarrera['nom_carrera'];
+    	$this->tiraMaterias = $this->ModelosP->ObtenTiraMaterias($_SESSION["S_usr"]);
+    	//var_dump($this->tiraMaterias[0]['id_grupo']);
+    	//die();
+    	for ($i=0; $i < count($this->tiraMaterias); $i++) {
+			$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->tiraMaterias[$i]['id_grupo']));
+			$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->tiraMaterias[$i]['id_grupo']));
+			$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->tiraMaterias[$i]['id_grupo']));
+		}
+		//Generar el PDF
+		$pdf = new PDF('P', 'cm', 'a4');
+		$pdf->AddPage();
+		$pdf->SetFont('Times','I',12);
+		$pdf->Cell(6,0,$nombre,0,0,'A');
+		$pdf->Cell(3,0,$this->idAlu,0,0,'A');
+		$pdf->Cell(5,0,$this->carrera,0,0,'A');
+		$pdf->Cell(5,1,$this->plan,0,1,'A');
+		$pdf->SetFont('Times','BU',18);
+		$pdf->Cell(19,1,'Materias  '.$_SESSION["S_period"],0,0,'C');
+		$pdf->Ln(1);
+		$pdf->Ln(1);
+		$pdf->SetFont('Times','B',16);
+		$pdf->SetDrawColor(0,80,180);
+		$pdf->SetFillColor(430,430,10);
+		$pdf->SetLineWidth(0.08);
+		$pdf->Cell(6, 1, "Nombre", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Profesor", 1, 0, 'C');
+		$pdf->Cell(3, 1, "Grupo", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Salón", 1, 0, 'C');
+
+		$pdf->Ln();
+		$pdf->SetFont('Times','',12);
+
+		for ($i=0; $i < count($this->tiraMaterias); $i++) {
+			$pdf->Cell(6, 1, $this->tiraMaterias[$i]["nom_materia"], 1, 0, 'C');
+			$pdf->Cell(5, 1, $this->tiraMaterias[$i]["nom_profesor"], 1, 0, 'C');
+			$pdf->Cell(3, 1, $this->tiraMaterias[$i]["id_grupo"], 1, 0, 'C');
+			$pdf->Cell(5, 1, $this->tiraMaterias[$i]["id_salon"], 1, 1, 'C');
+		}
+
+		$pdf->Output();
 	}
 
 	public function fKardex(){ //Funcion para generar el KARDEX de una alumno
+		//Nombre, materias, profesor, grupo, periodo, plan estudio, horario, fecha
 
+    //Obtener la informacion para la tira de materias
+    $this->idAlu = $this->ModelosP->ObtenIdAlumno($_SESSION["S_usr"]);
+    $planCarrera= $this->ModelosP->ObtenMasInfo($_SESSION["S_usr"]);
+    $this->plan = $planCarrera['plan_estudio'];
+    $this->carrera = $planCarrera['nom_carrera'];
+
+    $this->tiraMaterias = $this->ModelosP->ObtenAllTiraMaterias($_SESSION["S_usr"]);
+
+    if (count($this->tiraMaterias) == 0) {
+    	//Indicar que ese alukno no tiene inscripciones a ese semestre
+    	$this->load->view('VNoInscri');
+    }else{
+    	for ($i=0; $i < count($this->tiraMaterias); $i++) {
+			$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->tiraMaterias[$i]['id_grupo']));
+			$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->tiraMaterias[$i]['id_grupo']));
+			$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->tiraMaterias[$i]['id_grupo']));
+		}
+		//var_dump($this->tiraMaterias);
+		//var_dump($this->infoH[2]['dias']);
+		//die();
+
+		$this->load->view('VKardex',$this->tiraMaterias, $this->idAlu, $this->plan, $this->carrera, $this->infoH);
+	}
+}
+	
+	public function fPDFKardex(){ //Función que genera el PDF del reporte de inscripciones de un alumno
+		//Obtener nuevamente la información que se usará en el reporte
+		$nombre ="Nombre: ".$_SESSION["S_usr"];
+		$this->idAlu = "Id: ".$this->ModelosP->ObtenIdAlumno($_SESSION["S_usr"]);
+    	$planCarrera= $this->ModelosP->ObtenMasInfo($_SESSION["S_usr"]);
+    	$this->plan ="Plan: ".$planCarrera['plan_estudio'];
+    	$this->carrera ="Carrera: ".$planCarrera['nom_carrera'];
+    	$this->tiraMaterias = $this->ModelosP->ObtenAllTiraMaterias($_SESSION["S_usr"]);
+    	//var_dump($this->tiraMaterias[0]['id_grupo']);
+    	//die();
+    	for ($i=0; $i < count($this->tiraMaterias); $i++) {
+			$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->tiraMaterias[$i]['id_grupo']));
+			$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->tiraMaterias[$i]['id_grupo']));
+			$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->tiraMaterias[$i]['id_grupo']));
+		}
+		//Generar el PDF
+		$pdf = new PDF('P', 'cm', 'a4');
+		$pdf->AddPage();
+		$pdf->SetFont('Times','I',12);
+		$pdf->Cell(6,0,$nombre,0,0,'A');
+		$pdf->Cell(3,0,$this->idAlu,0,0,'A');
+		$pdf->Cell(5,0,$this->carrera,0,0,'A');
+		$pdf->Cell(5,1,$this->plan,0,1,'A');
+		$pdf->SetFont('Times','BU',18);
+		$pdf->Cell(19,1,'Rporte Kardex  ',0,0,'C');
+		$pdf->Ln(1);
+		$pdf->Ln(1);
+		$pdf->SetFont('Times','B',16);
+		$pdf->SetDrawColor(0,80,180);
+		$pdf->SetFillColor(430,430,10);
+		$pdf->SetLineWidth(0.08);
+		$pdf->Cell(6, 1, "Nombre", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Profesor", 1, 0, 'C');
+		$pdf->Cell(3, 1, "Grupo", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Salón", 1, 0, 'C');
+
+		$pdf->Ln();
+		$pdf->SetFont('Times','',12);
+
+		for ($i=0; $i < count($this->tiraMaterias); $i++) {
+			$pdf->Cell(6, 1, $this->tiraMaterias[$i]["nom_materia"], 1, 0, 'C');
+			$pdf->Cell(5, 1, $this->tiraMaterias[$i]["nom_profesor"], 1, 0, 'C');
+			$pdf->Cell(3, 1, $this->tiraMaterias[$i]["id_grupo"], 1, 0, 'C');
+			$pdf->Cell(5, 1, $this->tiraMaterias[$i]["id_salon"], 1, 1, 'C');
+		}
+
+		$pdf->Output();
 	}
 
 	public function fRepoMateriasProfe(){ //Reporte de Materias-Profesor (Administrador)

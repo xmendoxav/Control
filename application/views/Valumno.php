@@ -13,20 +13,20 @@
 	<h1>Alumno: <?php echo $_SESSION["S_usr"] ?>--<?php echo $_SESSION["S_period"] ?>--  </h1>
 
 	<form action="cargaVInscrGrupo" method="post">
-		<input type="submit" value="Inscripción a Grupo" style="margin-top: 10px; width: 175px;">
+		<input type="submit" value="Inscripción a Grupo" style="margin-top: 10px; width: 180px;">
 	</form>
 
 	<form action="frepoInscrip" method="post">
-		<input type="submit" value="Reporte de Inscripciones" style="margin-top: 10px; width: 175px;" >
+		<input type="submit" value="Reporte Inscripciones <?php echo($_SESSION["S_period"]) ?>" style="margin-top: 10px; width: 180px;" >
 	</form>
 
 	<form action="fKardex" method="post">
-		<input type="submit" value="Reporte de Kardex" style="margin-top: 10px; width: 175px;" >
+		<input type="submit" value="Reporte de Kardex" style="margin-top: 10px; width: 180px;" >
 	</form>
 
 
 	<form action="fsalir" method="post">
-		<input type="submit" value="Salir" style="margin-top: 20px; width: 175px;" >
+		<input type="submit" value="Salir" style="margin-top: 20px; width: 180px;" >
 	</form>
 
 </div>

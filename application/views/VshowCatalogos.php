@@ -30,7 +30,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<td><label for="t_respaldo">Catalogo: </label></td>
 			<td style="padding:10px;">
 				<select name="select" id="select" class="form-control">
-					
+
 					<option class="form-control"></option>
 					<option value="tiposExamenes" class="form-control">Tipos de Examenes</option>
 					<option value="salones" class="form-control">Salones</option>
@@ -41,7 +41,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<option value="alumnos" class="form-control">Alumnos</option>
   		     	</select>
 
-  	  		</td> 
+  	  		</td>
 	<table align="center">
 		<div id="div_tiposExamenes" class="contenido" style="text-align:center;">
           		<?php
@@ -53,7 +53,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   		<div id="div_salones" class="contenido" style="text-align:center;">
   				<?php
 	    			for ($i=0; $i < count($this->salones); $i++) {?>
-	    			 Id: <input type="text" value=" <?php echo $this->salones[$i]['id_salon'] ;?> " readonly> <input type="text" value=" <?php echo $this->salones[$i]['salon'] ;?> " readonly><br>
+	    			 Id: <input type="text" value=" <?php echo $this->salones[$i]['id_salon'] ;?> " readonly><br>
 	    		<?php } ?>
   		</div>
 
@@ -91,7 +91,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	    			 Id: <input type="text" value=" <?php echo $this->Alumnos[$i]['id_alumno'] ;?> " readonly> Nombre: <input type="text" value=" <?php echo $this->Alumnos[$i]['nom_alumno'] ;?> " readonly>Plan: <input type="text" value=" <?php echo $this->Alumnos[$i]['id_plan'] ;?> " readonly><br>
 	    		<?php } ?>
   		</div>
-  		<input type="submit" value="Regresar"> 
+  		<input type="submit" value="Regresar">
   	</form>
 	</table>
 </tr>
