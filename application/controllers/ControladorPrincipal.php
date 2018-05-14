@@ -653,8 +653,38 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		
 	}
 
+	public function fPDFMateriasProfesPeriodo(){
+		//Obtener nuevamente la información que se usará en el reporte
+		$this->materiasPeriod = $this->ModelosP->ObtenMateriasPorfes($_SESSION["S_period2"]);
+		$encabezado = 'Reporte Materias/Profesores, Periodo '.$_SESSION["S_period2"];
+		//Generar el PDF
+		$pdf = new PDF('P', 'cm', 'a4');
+		$pdf->AddPage();
+		$pdf->SetFont('Times','BU',18);
+		$pdf->Cell(19,1,$encabezado,0,0,'C');
+		$pdf->Ln(1);
+		$pdf->Ln(1);
+		$pdf->SetFont('Times','B',16);
+		$pdf->SetDrawColor(0,80,180);
+		$pdf->SetFillColor(430,430,10);
+		$pdf->SetLineWidth(0.08);
+		$pdf->Cell(6, 1, "Id Materia", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Materia", 1, 0, 'C');
+		$pdf->Cell(3, 1, "Profesor", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Grupo", 1, 0, 'C');
+		$pdf->Ln();
+		$pdf->SetFont('Times','',12);
 
+		for ($i=0; $i < count($this->materiasPeriod); $i++) {
+			$pdf->Cell(6, 1, $this->materiasPeriod[$i]["id_materia"], 1, 0, 'C');
+			$pdf->Cell(5, 1, $this->materiasPeriod[$i]["nom_materia"], 1, 0, 'C');
+			$pdf->Cell(3, 1, $this->materiasPeriod[$i]["nom_profesor"], 1, 0, 'C');
+			$pdf->Cell(5, 1, $this->materiasPeriod[$i]["id_grupo"], 1, 1, 'C');
+		}
+		$pdf->Output();
 	}
+
+
 
 
 	public function fRepoSalon(){
@@ -721,8 +751,6 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 			}
 		}
 		$pdf->Output();
-
-	public function fRepoSalon(){ //Reporte de Salon (Administrador)
 
 
 	}
