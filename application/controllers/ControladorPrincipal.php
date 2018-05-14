@@ -550,12 +550,12 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		var_dump(count($id_alumno));
 		for ($i=0; $i <sizeof($id_alumno) ; $i++) { 
 			 $id_inscripcion[$i] = $this->ModelosP->buscaIdInscripcion($id_alumno[$i],$datos);
-			 
 		}
 		
 		for ($i=0; $i < sizeof($id_inscripcion) ; $i++) {
 			$respuesta[$i]=$this->ModelosP->ingresaCalificacion($calificacion[$i],$tipo_examen[$i],$id_inscripcion[$i]);
 		}
+		echo "Trabajo hecho";
 		$this->load->view('Vprofesor');
 	}
 

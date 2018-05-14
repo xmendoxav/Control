@@ -325,7 +325,7 @@
 			
 			$query = "INSERT INTO calificacion (id_calificacion, calificacion, id_tipo_examen, id_inscripcion) VALUES (NULL, '".$calificacion."', '".$tipo_examen."', '".$id_inscripcion."')";
 			$this->db->query($query);
-			return $this->db->query($query);
+			
 		}
 	}
 ?>
