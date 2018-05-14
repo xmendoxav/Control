@@ -13,6 +13,13 @@
 	<h1>Profesor: <?php echo $_SESSION["S_usr"] ?> --<?php echo $_SESSION["S_period"] ?>-- </h1>
 	<form action="fcargaVregistroCalif" method="post">
 		<input type="submit" value="Registro de Calificaciones" style="margin-top: 10px; width: 175px;" >
+		<select name="mater"  id="mater" > 
+			<option selected >Grupo</option>
+			<?php
+				for ($i=0; $i < count($this->materiasProfe); $i++) {?>
+					<option><?php echo $this->materiasProfe[$i]['nom_materia'] ;?></option>
+			<?php } ?>
+		</select>
 	</form>
 
 	<form action="flistamateriasHorarios" method="post">

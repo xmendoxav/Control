@@ -95,7 +95,13 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 					$this->load->view('Vadministrador'); //Cargar vista de  Administrador
 				}elseif($tUser == 'Docente') {
 					$this->grupos = $this->ModelosP->obtenInfoGruposProfe($_SESSION["S_usr"]);
+
+					$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]); //Obtiene el id del profe (usando su nombre)
+					$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe);
+					$this->load->view('Vprofesor', $this->grupos, $this->materiasProfe); //Cargar vista de  profesor
+
 					$this->load->view('Vprofesor',$this->grupos); //Cargar vista de  profesor
+
 				}else{
 					$this->load->view('Valumno'); //Cargar vista de Alumno
 				}
@@ -116,7 +122,13 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	public function fCargaVProfe(){
 		$this->grupos = $this->ModelosP->obtenInfoGruposProfe($_SESSION["S_usr"]);
+
+		$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]); //Obtiene el id del profe (usando su nombre)
+					$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe);
+		$this->load->view('Vprofesor', $this->grupos);
+
 		$this->load->view('Vprofesor'); //Cargar vista de  profesor
+
 	}
 
 
@@ -249,6 +261,10 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	public function fcargaVregistroCalif(){ //Funcion para cargar la vista para registrar calificaciones
 		//La vista de registro de calificaciones necesita de varios parametros. Primero obtener esos parametros.
+		$grupo = $this->input->post('mater');
+		
+		$this->alumnos = $this->ModelosP->ObtenAlumnosGrupo($grupo);
+		die();
 		$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]); //Obtiene el id del profe (usando su nombre)
 		$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe); //Obtiene las materias de un profe
 		//var_dump($materiasProfe);
@@ -260,15 +276,12 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$envio['id_materias'] = $materia;
 		$envio['id_grupos'] = $grupos;
 		*/
+		
 
 		$this->load->view('VRegisCalif', $this->materiasProfe); //Se carga la vista con los datos necesarios
 	}
 
-	public function fRegistraCalif(){ //Funcion para registras calificaciones
-		
-
-	}
-
+	
 	public function flistamateriasHorarios(){ //Funcion para listar als materias y horarios de PROFESOR
 		//Nombre, materias, profesor, grupo, periodo, plan estudio, horario, fecha
 
@@ -574,17 +587,93 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	public function fRepoMateriasProfe(){ //Reporte de Materias-Profesor (Administrador)
 
+		
+
+		$period = $this->input->post('periodo'); //Se obtiene el periodo del que se quiere la info
+		$_SESSION["S_period2"]=$period;
+		$this->materiasPeriod = $this->ModelosP->ObtenMateriasPorfes($period);			
+		$this->load->view('VRepoMateriasProfe', $this->materiasPeriod);
+
+		
 	}
 
-	public function fRepoSalon(){ //Reporte de Salon (Administrador)
+
+	
+
+
+	public function fRepoSalon(){
+
+
+
+		 //Reporte de Salon (Administrador)
+		$period = $this->input->post('periodo2'); //Se obtiene el periodo del que se quiere la info
+		$_SESSION["S_period3"]=$period;
+		$this->salonesPeriod = $this->ModelosP->ObtenInfoSalones($period);
+		for ($i=0; $i < count($this->salonesPeriod); $i++) {
+			$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->salonesPeriod[$i]['id_grupo']));
+			$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->salonesPeriod[$i]['id_grupo']));
+			$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->salonesPeriod[$i]['id_grupo']));
+		}
+		$this->load->view('VRepoSalones', $this->salonesPeriod, $this->infoH);
+
+
+
 
 	}
+
+	public function fPDFRepoSalon(){ //Genera el PDF del reporte de arriba xD
+		$this->salonesPeriod = $this->ModelosP->ObtenInfoSalones($_SESSION["S_period3"]);
+		for ($i=0; $i < count($this->salonesPeriod); $i++) {
+			$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->salonesPeriod[$i]['id_grupo']));
+			$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->salonesPeriod[$i]['id_grupo']));
+			$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->salonesPeriod[$i]['id_grupo']));
+		}
+		$encabezado = 'Reporte Salones, Periodo '.$_SESSION["S_period3"];
+		//Generar el PDF
+		$pdf = new PDF('P', 'cm', 'a4');
+		$pdf->AddPage();
+		$pdf->SetFont('Times','BU',18);
+		$pdf->Cell(19,1,$encabezado,0,0,'C');
+		$pdf->Ln(1);
+		$pdf->Ln(1);
+		$pdf->SetFont('Times','B',16);
+		$pdf->SetDrawColor(0,80,180);
+		$pdf->SetFillColor(430,430,10);
+		$pdf->SetLineWidth(0.08);
+		$pdf->Cell(2, 1, "Salón", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Materia", 1, 0, 'C');
+		$pdf->Cell(2, 1, "Grupo", 1, 0, 'C');
+		$pdf->Cell(4, 1, "Profesor", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Horario", 1, 0, 'C');
+		$pdf->Ln();
+		$pdf->SetFont('Times','',12);
+
+		for ($i=0; $i < count($this->salonesPeriod); $i++) {
+			$pdf->Cell(2, 1, $this->salonesPeriod[$i]["id_salon"], 1, 0, 'C');
+			$pdf->Cell(5, 1, $this->salonesPeriod[$i]["nom_materia"], 1, 0, 'C');
+			$pdf->Cell(2, 1, $this->salonesPeriod[$i]["id_grupo"], 1, 0, 'C');
+			$pdf->Cell(4, 1, $this->salonesPeriod[$i]["nom_profesor"], 1, 0, 'C');
+
+			for ($j=0; $j < count($this->infoH[$i]['dias']) ; $j++) { 
+				$StringHorario = $this->infoH[$i]['dias'][$j]."--".$this->infoH[$i]['h_i'][$j]."---".$this->infoH[$i]['h_f'][$j];
+				if ($j == 0) {
+					$esp = 5;
+				}else{
+					$esp = 31;
+				}
+				$pdf->Cell($esp, 1, $StringHorario, 0, 1, 'C');
+			}
+		}
+		$pdf->Output();
+}
+	
 	public function obtenAlumnos(){
-		$profe = $this->input->post("profesor");
-		$datos = $this->input->post("datosProfe");
+		$profe = $this->input->post('profesor');
+		$datos = $this->input->post('datosProfe');
 		$id_grupo = explode("-", $datos);
 		$nombreGrupo = $id_grupo[1];
 		$id_grupos = $id_grupo[0];
+
 		//$respuesta = $this->ModelosP->ObtenAlumnosProfeGrupo($profe, $datos);//en el modelo tenemos que regresar el valor como objeto; $respuetsa->result
 		//echo json_encode($respuesta);
 		$id_profesor = $this->ModelosP->ObtenIdProfe($profe);
@@ -592,8 +681,9 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		
 		$id_alumnos = $this->ModelosP->buscaIdAlumnos($id_materia);
 		$alumnos = $this->ModelosP->buscaAlumosGrupo($id_profesor,$id_grupos);
-		//echo "alumnos";
+		//echo (json_encode($profe));
 		echo json_encode($alumnos);
+
 		//$datos['seleccion'] obtiene el valor ese merengues
 	}
 

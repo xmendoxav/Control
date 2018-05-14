@@ -9,7 +9,7 @@
 	<title>Profesor</title>
 </head>
 
-<script type="text/javascript" src="/Proyecto/Control/js/jquery-3.3.1.min.js">
+<script type="text/javascript" src="/CodeIgSistemaCE/js/jquery-3.3.1.min.js">
 </script>
 <script type="text/javascript">
 
@@ -136,7 +136,7 @@ function mostrarAlumnos(){
 	var profe = document.getElementById('profe').value;
 
 	$.ajax({
-		url:"http://localhost/Proyecto/Control/index.php/ControladorPrincipal/obtenAlumnos",
+		url:"http://localhost/CodeIgSistemaCE/index.php/ControladorPrincipal/obtenAlumnos",
 		type:"POST",
 		data:{datosProfe:datos, profesor:profe}, 
 		success: function(respuesta){
@@ -190,10 +190,17 @@ function agregaralumno(){
   		     	<td><input type="button" value="Desplegar" id="hola" class="form-control" onclick="mostrarAlumnos()" /></td>
   		     	
 	        </form>
+
   	  		</td>
+
+
   	  	</tr>
+
   	  </table>
 </div>
+<form action="fCargaVProfe" method="post">
+		<input type="submit" value="Regresar" style="margin-top: 20px; width: 175px;" >
+	</form>
 </body>
 <div id="muestraDatos"></div>
 
