@@ -142,12 +142,8 @@ function mostrarAlumnos(){
 		success: function(respuesta){
 			//alert(respuesta);
 			respuestaGlobal = respuesta;
-
 			registros = eval(respuesta);
-
 			if (registros!=""){
-
-			
 			html = "<form action = "+"agregaCalificaciones"+" method="+"post"+"><table class='table table-responsive table-bordered'><thead>";
 			html +="<tr><th align="+"center"+">Nombre</th><th>Numero de cuenta</th><th>Examen</th><th>Calificacion</th></th>";//nombre de los campos a mostrar
 			html += "</thead><tbody>";

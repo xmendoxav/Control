@@ -592,7 +592,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		
 		$id_alumnos = $this->ModelosP->buscaIdAlumnos($id_materia);
 		$alumnos = $this->ModelosP->buscaAlumosGrupo($id_profesor,$id_grupos);
-
+		//echo "alumnos";
 		echo json_encode($alumnos);
 		//$datos['seleccion'] obtiene el valor ese merengues
 	}
