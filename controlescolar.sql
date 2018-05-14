@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-05-2018 a las 22:12:11
+-- Tiempo de generación: 14-05-2018 a las 08:46:23
 -- Versión del servidor: 10.1.28-MariaDB
 -- Versión de PHP: 7.1.11
 
@@ -81,7 +81,8 @@ INSERT INTO `calificacion` (`id_calificacion`, `calificacion`, `id_tipo_examen`,
 (20, 7.3, 1, 16),
 (21, 4.9, 1, 17),
 (22, 5.6, 2, 17),
-(23, 6, 3, 17);
+(23, 6, 3, 17),
+(24, 4.5, 1, 18);
 
 -- --------------------------------------------------------
 
@@ -134,7 +135,8 @@ INSERT INTO `grupo` (`id_grupo`, `id_profesor`, `id_materia`) VALUES
 (14, 14, 'L41065'),
 (15, 15, 'L41054'),
 (16, 16, 'L41053'),
-(17, 17, 'L41032');
+(17, 17, 'L41032'),
+(18, 18, 'L41109');
 
 -- --------------------------------------------------------
 
@@ -172,7 +174,8 @@ INSERT INTO `horario` (`id_horario`, `id_salon`, `dia`, `id_grupo`, `h_i`, `h_f`
 (14, 'C403', 'Viernes', 14, '12:00', '15:00'),
 (15, 'C406', 'Martes,Jueves', 15, '12:00,12:00', '13:30,13:30'),
 (16, 'C403', 'Lunes,Miercoles,Viernes', 16, '07:00,07:00,07:00', '08:30,08:30,08:30'),
-(17, 'C402', 'Martes,Jueves', 17, '10:00,10:00', '11:30,11:30');
+(17, 'C402', 'Martes,Jueves', 17, '10:00,10:00', '11:30,11:30'),
+(18, 'C401', 'Lunes,Miercoles,Viernes', 18, '07:00,07:00,07:00', '09:00,09:00,09:00');
 
 -- --------------------------------------------------------
 
@@ -208,7 +211,8 @@ INSERT INTO `ins_alu_grupo` (`id_inscripcion`, `id_alumno`, `id_grupo`, `periodo
 (14, 1011231, 14, '2018A'),
 (15, 1011231, 15, '2018A'),
 (16, 1011231, 16, '2018A'),
-(17, 1011231, 17, '2018A');
+(17, 1011231, 17, '2018A'),
+(18, 1011231, 18, '2018A');
 
 -- --------------------------------------------------------
 
@@ -462,25 +466,25 @@ ALTER TABLE `alumno`
 -- AUTO_INCREMENT de la tabla `calificacion`
 --
 ALTER TABLE `calificacion`
-  MODIFY `id_calificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id_calificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `grupo`
 --
 ALTER TABLE `grupo`
-  MODIFY `id_grupo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_grupo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `horario`
 --
 ALTER TABLE `horario`
-  MODIFY `id_horario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_horario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `ins_alu_grupo`
 --
 ALTER TABLE `ins_alu_grupo`
-  MODIFY `id_inscripcion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_inscripcion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `plan_estudio`
