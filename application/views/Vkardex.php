@@ -11,7 +11,7 @@
 <div align="center">
 	<h2>Reporte Kardex</h2>
 	<h1>Alumno:  <?php echo $_SESSION["S_usr"]; ?> - - -  Id: <?php echo $this->idAlu; ?> - - - - Carrera: <?php echo $this->carrera;?> - - - - Plan: <?php echo $this->plan;?> </h2>
-	<form action="fPDFKardex" method="post">
+	<form action="fPDFKardex" method="post" target="_Blank">
 		<table align="center" class="table table-condensed">
 			<tr>
 				<th>Periodo</th>
@@ -46,7 +46,7 @@
   	</table>
   	  </table>
 
-		<input type="submit" value="Generar PDF" style="margin-top: 40px">
+		<input type="submit" value="Generar PDF" style="margin-top: 40px"  >
 	</form>
 
 	<form action="fCargaVAlu" method="post">

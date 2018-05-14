@@ -11,7 +11,7 @@
 <div align="center">
 	<h1>Calificaciones.</h1>
 	<h2>Grupo:  <?php echo $_SESSION['group2']; ?> Materia: <?php echo $this->materia['nom_materia']; ?> Periodo: <?php echo $this->period; ?></h2> 
-	<form action="fPDFCalifAlumnos" method="post">
+	<form action="fPDFCalifAlumnos" method="post" target="_blank">
 		<table align="center" class="table table-condensed">
 			<tr>
 				<th>Id Alumno</th>
@@ -30,8 +30,8 @@
 				</tr>
   	</table>
   	  </table>
-
-		<input type="submit" value="Generar PDF" style="margin-top: 40px">
+  	  	<input type="submit" value="Generar PDF" style="margin-top: 40px">
+		
 	</form>
 
 	<form action="fCargaVProfe" method="post">

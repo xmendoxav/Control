@@ -10,20 +10,20 @@
 <body>
 <div align="center">
 	<h1>Profesor:  <?php echo $_SESSION["S_usr"]; ?> Periodo: <?php echo $_SESSION["S_period"]; ?> </h2>
-	<form action="fPDFMateriasHorarios" method="post">
+	<form action="fPDFMateriasHorarios" method="post"  target="_blank">
 		<table align="center" class="table table-condensed">
 			<tr>
-				<th>Materia</th>
-				<th>Grupo</th>
-				<th>Salón</th>
+				<th>Id Materia</th>
+				<th>Nombre materia</th>
+				<th>Salon</th>
 				<th>Horario</th>
   	  </tr>
 			<?php
 				for ($i=0; $i < count($this->materiasProfe); $i++) {?>
 				<tr>
 
+				 <td><?php echo $this->materiasProfe[$i]['id_materia'] ;?> </td>
 				 <td><?php echo $this->materiasProfe[$i]['nom_materia'] ;?> </td>
-				 <td><?php echo $this->materiasProfe[$i]['id_grupo'] ;?> </td>
         		 <td><?php echo $this->materiasProfe[$i]['id_salon'] ;?> </td>
 
 				 <td> <!--Horario (Dias horas se pintan de una manera diferente)-->

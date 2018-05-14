@@ -9,7 +9,7 @@
 	<title>Profesor</title>
 </head>
 
-<script type="text/javascript" src="/CodeIgSistemaCE/js/jquery-3.3.1.min.js">
+<script type="text/javascript" src="/Proyecto/Control/js/jquery-3.3.1.min.js">
 </script>
 <script type="text/javascript">
 
@@ -136,7 +136,7 @@ function mostrarAlumnos(){
 	var profe = document.getElementById('profe').value;
 
 	$.ajax({
-		url:"http://localhost/CodeIgSistemaCE/index.php/ControladorPrincipal/obtenAlumnos",
+		url:"http://localhost/Proyecto/Control/index.php/ControladorPrincipal/obtenAlumnos",
 		type:"POST",
 		data:{datosProfe:datos, profesor:profe}, 
 		success: function(respuesta){
@@ -154,7 +154,7 @@ function mostrarAlumnos(){
 			for (var i=0; i<registros.length; i++){
 				html+="<tr> <input type = "+ "text "+" id  = "+"id_alumno "+" name = "+"id_alumno[] "+" value = "+registros[i]["id_alumno"]+" style = "+"visibility:hidden"+"> <input type = "+ "text "+" id  = "+"id_grupo "+" name = "+"id_grupo"+" value = "+registros[i]["id_grupo"]+" style = "+"visibility:hidden"+"> <td>"+registros[i]["nom_alumno"]+"</td>  <td>"+registros[i]["id_alumno"]+"</td><td><select id= "+"examen "+"name="+"examen[] "+" class="+"form-control"+"><option id="+"tipo_examen "+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"1"+">Ordinario</option> <option id="+"tipo_examen"+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"2"+">Extra</option><option id="+"tipo_examen"+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"3"+">Titulo</option> <td><input type="+"text"+" name= "+"calificacion[]"+" id="+"calificacion"+" class="+"form-control"+"></td> ";
 			}}else{
-				html+="<tr> <td>No se encontraron registros</td> </tr>";
+				html="<table> </thead><tbody><tr> <td>No se encontraron registros</td> </tr>";
 			}
 
 			html += "</body></table><input type = "+"submit"+" value = "+"Guardar"+" class = "+"form-control"+" > <form action="+"fcargaVistaProfe"+" method="+"post"+"><input type="+"submit"+" class = "+"form-control"+" ></form> </form>";

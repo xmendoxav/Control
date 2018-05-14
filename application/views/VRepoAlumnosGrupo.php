@@ -10,7 +10,7 @@
 <body>
 <div align="center">
 	<h1>Alumnos del Grupo:  <?php echo $_SESSION['group']; ?> del Profesor <?php echo $_SESSION['S_usr']; ?></h1>
-	<form action="fPDFAlumnosGrupo" method="post">
+	<form action="fPDFAlumnosGrupo" method="post" target="_blank">
 		<table align="center" class="table table-condensed">
 			<tr>
 				<th>Id Alumno</th>
