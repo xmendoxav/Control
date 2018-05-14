@@ -316,13 +316,11 @@
 		public function buscaAlumosGrupo($idProfe,$id_grupo){
 			$query ="SELECT alumno."."nom_alumno, alumno."."id_alumno, grupo."." FROM alumno, ins_alu_grupo, grupo, profesor WHERE alumno."."id_alumno = ins_alu_grupo."."id_alumno AND grupo."."id_profesor = profesor."."id_profesor AND grupo."."id_grupo = ins_alu_grupo."."id_grupo AND profesor."."id_profesor = '".$idProfe."' AND ins_alu_grupo."."id_grupo = '".$id_grupo."'";
 			$resultado = ($this->db->query($query)->result_array());
-
-
-		}
-
-
 			return $resultado;
+
+
 		}
+
 
 		public function ObtenAlumnosGrupo($grupo){ //Obtiene los alumnos de un grupo especifico
 			$query ="SELECT alumno."."id_alumno, alumno."."nom_alumno FROM alumno, ins_alu_grupo WHERE ( alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_grupo = '".$grupo."' )"; 
