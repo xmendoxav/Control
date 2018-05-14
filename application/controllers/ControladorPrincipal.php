@@ -378,7 +378,54 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function fRepoCalif(){ //Funcion para reporte de CALIFICACIONES (EL QUE GENERA EL PROFE)
+		$grupo = $this->input->post('grupo2');
+		$_SESSION['group2'] = $grupo;
+		$this->period = $this->input->post('period');
+		$_SESSION['periodoo'] = $this->period;
+		$tExa = $this->input->post('tExa');
 
+		$this->materia = $this->ModelosP->ObtenMateria($grupo);
+		$this->infoRepo = $this->ModelosP->ObtenCalifAlumnos($grupo, $this->period);
+		//var_dump($this->materia, $this->infoRepo);
+		//die();
+		$this->load->view('VRepoCalif', $this->materia, $this->infoRepo, $this->period);
+	}
+
+	public function fPDFCalifAlumnos(){ //Hace el PDF de lo de arriba
+		$this->materia = $this->ModelosP->ObtenMateria($_SESSION['group2']);
+		$this->infoRepo = $this->ModelosP->ObtenCalifAlumnos($_SESSION['group2'], $_SESSION['periodoo']);
+
+		//Generar el PDF 
+		$nombre = "Calificaciones del Grupo: ".$_SESSION['group2'].", Materia: ".$this->materia['nom_materia'].", Periodo: ".$_SESSION['periodoo'];
+
+		$pdf = new PDF('P', 'cm', 'a4');
+		$pdf->AddPage();
+		
+		$pdf->SetFont('Times','BU',18);
+		$pdf->Cell(19,1,$nombre,0,0,'C');
+		$pdf->Ln(1);
+		$pdf->Ln(1);
+		$pdf->SetFont('Times','B',14);
+		$pdf->SetDrawColor(0,80,180);
+		$pdf->SetFillColor(430,430,10);
+		$pdf->SetLineWidth(0.08);
+		$pdf->Cell(3, 1, "Id Alumno", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Nombre Alumno", 1, 0, 'C');
+		$pdf->Cell(4, 1, "Tipo Examen", 1, 0, 'C');
+		$pdf->Cell(3, 1, "Calificacion", 1, 0, 'C');
+
+		$pdf->Ln();
+		$pdf->SetFont('Times','',12);
+
+		for ($i=0; $i < count($this->infoRepo); $i++) {
+			$pdf->Cell(3, 1, $this->infoRepo[$i]["id_alumno"], 1, 0, 'C');
+			$pdf->Cell(5, 1, $this->infoRepo[$i]["nom_alumno"], 1, 0, 'C');
+			$pdf->Cell(4, 1, $this->infoRepo[$i]["tipo_examen"], 1, 0, 'C');
+			$pdf->Cell(3, 1, $this->infoRepo[$i]["calificacion"], 1, 0, 'C');
+
+		}
+
+		$pdf->Output();
 	}
 
 	public function cargaVInscrGrupo(){ //Funcion para hacer una inscripción a un grupo
