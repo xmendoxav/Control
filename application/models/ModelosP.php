@@ -140,6 +140,20 @@
 				}
 			}
 		}
+
+		public function ObtenMateria($grupo){ //Obtiene la materia de un grupo
+			$query = "SELECT materia."."id_materia, materia."."nom_materia FROM grupo, materia WHERE grupo."."id_materia = materia."."id_materia AND grupo."."id_grupo = '".$grupo."' ";
+			$resultado = ($this->db->query($query)->row_array());
+			return $resultado;
+		}
+
+		public function ObtenCalifAlumnos($grupo, $periodo){
+			$query = "SELECT alumno."."id_alumno, alumno."."nom_alumno, tipo_examen."."tipo_examen, calificacion."."calificacion FROM alumno, ins_alu_grupo, calificacion, tipo_examen WHERE tipo_examen."."id_tipo_examen = calificacion."."id_tipo_examen AND alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_inscripcion = calificacion."."id_inscripcion AND ins_alu_grupo."."id_grupo = '".$grupo."' AND  ins_alu_grupo."."periodo = '".$periodo."' ";
+
+			$resultado = ($this->db->query($query)->result_array());
+			return $resultado;
+		}
+
 		public function obtenMaterias2($idProfe){
 			$query = "SELECT grupo."."id_materia, id_grupo, materia."."nom_materia FROM grupo, materia WHERE grupo."."id_profesor ='".$idProfe."'and materia.id_materia = grupo.id_materia ";
 			$resultado = ($this->db->query($query)->result_array());
@@ -300,23 +314,28 @@
 		}
 
 		public function buscaAlumosGrupo($idProfe,$id_grupo){
-			$query ="SELECT alumno.nom_alumno, alumno.id_alumno, grupo.id_grupo FROM alumno, ins_alu_grupo, grupo, profesor WHERE alumno.id_alumno = ins_alu_grupo.id_alumno AND grupo.id_profesor = profesor.id_profesor AND grupo.id_grupo = ins_alu_grupo.id_grupo AND profesor.id_profesor = '".$idProfe."'AND ins_alu_grupo."."id_grupo = '".$id_grupo."'";
+			$query ="SELECT alumno."."nom_alumno, alumno."."id_alumno, grupo."."id_grupo FROM alumno, ins_alu_grupo, grupo, profesor WHERE alumno."."id_alumno = ins_alu_grupo."."id_alumno AND grupo."."id_profesor = profesor."."id_profesor AND grupo."."id_grupo = ins_alu_grupo."."id_grupo AND profesor."."id_profesor = '".$idProfe."'AND ins_alu_grupo."."id_grupo = '".$id_grupo."'";
 			$resultado = ($this->db->query($query)->result_array());
 
+		}
+
 		public function ObtenAlumnosGrupo($grupo){ //Obtiene los alumnos de un grupo especifico
-			$query ="SELECT alumno."."id_alumno, alumno."."nom_alumno FROM alumno, ins_alu_grupo WHERE ( alumno."."id_alumno = ins_alu_grupo."."id_alumno AND ins_alu_grupo."."id_grupo = '".$grupo."' )"; 
+			$query ="SELECT alumno."."nom_alumno, alumno."."id_alumno FROM alumno, ins_alu_grupo, grupo, profesor WHERE alumno."."id_alumno = ins_alu_grupo."."id_alumno AND  AND grupo.id_grupo = ins_alu_grupo.id_grupo AND grupo."."nom_grupo = '".$grupo."'";
 			$resultado = ($this->db->query($query)->result_array());
-			
+
+			var_dump($query);
+			die();
 			return $resultado;
+			
 		}
 		
-		public function buscaAlumosGrupo($idProfe){
+		/**public function buscaAlumosGrupo($idProfe){
 			$query ="SELECT alumno.nom_alumno, alumno.id_alumno FROM alumno, ins_alu_grupo, grupo, profesor WHERE alumno.id_alumno = ins_alu_grupo.id_alumno AND grupo.id_profesor = profesor.id_profesor AND grupo.id_grupo = ins_alu_grupo.id_grupo AND profesor.id_profesor = '".$idProfe."'";
 			$resultado = ($this->db->query($query)->row_array());
 
 			
 			return $resultado;
-		}
+		}*/
 
 
 		public function buscaIdInscripcion($id_alumno,$id_grupo){

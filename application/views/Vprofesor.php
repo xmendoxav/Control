@@ -13,6 +13,13 @@
 	<h1>Profesor: <?php echo $_SESSION["S_usr"] ?> --<?php echo $_SESSION["S_period"] ?>-- </h1>
 	<form action="fcargaVregistroCalif" method="post">
 		<input type="submit" value="Registro de Calificaciones" style="margin-top: 10px; width: 175px;" >
+		<select name="mater"  id="mater" > 
+			<option selected >Grupo</option>
+			<?php
+				for ($i=0; $i < count($this->materiasProfe); $i++) {?>
+					<option><?php echo $this->materiasProfe[$i]['nom_materia'] ;?></option>
+			<?php } ?>
+		</select>
 	</form>
 
 	<form action="flistamateriasHorarios" method="post">
@@ -25,13 +32,37 @@
 			<option selected >Grupo</option>
 			<?php
 				for ($i=0; $i < count($this->grupos); $i++) {?>
-					<option  class="form-control"><?php echo $this->grupos[$i]['id_grupo'] ;?></option>
+					<option><?php echo $this->grupos[$i]['id_grupo'] ;?></option>
 			<?php } ?>
 		</select>
 	</form>
 
 	<form action="fRepoCalif" method="post">
 		<input type="submit" value="Reporte de Calificaciones" style="margin-top: 10px; width: 175px;" >
+		<select name="grupo2"  id="grupo2" > 
+			<option selected >Grupo</option>
+			<?php
+				for ($i=0; $i < count($this->grupos); $i++) {?>
+					<option><?php echo $this->grupos[$i]['id_grupo'] ;?></option>
+			<?php } ?>
+		</select>
+
+		<select name="period"  id="period" > 
+			<option selected >Periodo</option>
+			<option value="2018A" >2018A</option>
+			<option value="2017B" >2017B</option>
+			<option value="2017A" >2017A</option>
+			<option value="2016B" >2016B</option>
+			<option value="2016A" >2016A</option>
+		</select>
+
+		<select name="tExa"  id="tExa" > 
+			<option selected >T. Examen</option>
+			<option value="1">Ordinario</option>
+			<option value="2" >Extraordinario</option>
+			<option value="3" >Titulo</option>
+			<option value="4" >Especial</option>
+		</select>
 	</form>
 
 	<form action="fsalir" method="post">

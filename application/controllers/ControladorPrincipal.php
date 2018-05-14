@@ -94,7 +94,9 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 				}elseif($tUser == 'Docente') {
 					//Para cargar la vista del profesor, necesitamos los grupos en la base
 					$this->grupos = $this->ModelosP->obtenInfoGruposProfe($_SESSION["S_usr"]);
-					$this->load->view('Vprofesor', $this->grupos); //Cargar vista de  profesor
+					$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]); //Obtiene el id del profe (usando su nombre)
+					$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe);
+					$this->load->view('Vprofesor', $this->grupos, $this->materiasProfe); //Cargar vista de  profesor
 				}else{
 					$this->load->view('Valumno'); //Cargar vista de Alumno
 				}
@@ -113,6 +115,8 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	public function fCargaVProfe(){ //Funcion para cargar la vista del profesor
 		$this->grupos = $this->ModelosP->obtenInfoGruposProfe($_SESSION["S_usr"]);
+		$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]); //Obtiene el id del profe (usando su nombre)
+					$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe);
 		$this->load->view('Vprofesor', $this->grupos);
 	}
 
@@ -246,6 +250,10 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	public function fcargaVregistroCalif(){ //Funcion para cargar la vista para registrar calificaciones
 		//La vista de registro de calificaciones necesita de varios parametros. Primero obtener esos parametros.
+		$grupo = $this->input->post('mater');
+		
+		$this->alumnos = $this->ModelosP->ObtenAlumnosGrupo($grupo);
+		die();
 		$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]); //Obtiene el id del profe (usando su nombre)
 		$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe); //Obtiene las materias de un profe
 		//var_dump($materiasProfe);
@@ -257,6 +265,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$envio['id_materias'] = $materia;
 		$envio['id_grupos'] = $grupos;
 		*/
+		
 
 		$this->load->view('VRegisCalif', $this->materiasProfe); //Se carga la vista con los datos necesarios
 	}
@@ -378,7 +387,54 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function fRepoCalif(){ //Funcion para reporte de CALIFICACIONES (EL QUE GENERA EL PROFE)
+		$grupo = $this->input->post('grupo2');
+		$_SESSION['group2'] = $grupo;
+		$this->period = $this->input->post('period');
+		$_SESSION['periodoo'] = $this->period;
+		$tExa = $this->input->post('tExa');
 
+		$this->materia = $this->ModelosP->ObtenMateria($grupo);
+		$this->infoRepo = $this->ModelosP->ObtenCalifAlumnos($grupo, $this->period);
+		//var_dump($this->materia, $this->infoRepo);
+		//die();
+		$this->load->view('VRepoCalif', $this->materia, $this->infoRepo, $this->period);
+	}
+
+	public function fPDFCalifAlumnos(){ //Hace el PDF de lo de arriba
+		$this->materia = $this->ModelosP->ObtenMateria($_SESSION['group2']);
+		$this->infoRepo = $this->ModelosP->ObtenCalifAlumnos($_SESSION['group2'], $_SESSION['periodoo']);
+
+		//Generar el PDF 
+		$nombre = "Calificaciones del Grupo: ".$_SESSION['group2'].", Materia: ".$this->materia['nom_materia'].", Periodo: ".$_SESSION['periodoo'];
+
+		$pdf = new PDF('P', 'cm', 'a4');
+		$pdf->AddPage();
+		
+		$pdf->SetFont('Times','BU',18);
+		$pdf->Cell(19,1,$nombre,0,0,'C');
+		$pdf->Ln(1);
+		$pdf->Ln(1);
+		$pdf->SetFont('Times','B',14);
+		$pdf->SetDrawColor(0,80,180);
+		$pdf->SetFillColor(430,430,10);
+		$pdf->SetLineWidth(0.08);
+		$pdf->Cell(3, 1, "Id Alumno", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Nombre Alumno", 1, 0, 'C');
+		$pdf->Cell(4, 1, "Tipo Examen", 1, 0, 'C');
+		$pdf->Cell(3, 1, "Calificacion", 1, 0, 'C');
+
+		$pdf->Ln();
+		$pdf->SetFont('Times','',12);
+
+		for ($i=0; $i < count($this->infoRepo); $i++) {
+			$pdf->Cell(3, 1, $this->infoRepo[$i]["id_alumno"], 1, 0, 'C');
+			$pdf->Cell(5, 1, $this->infoRepo[$i]["nom_alumno"], 1, 0, 'C');
+			$pdf->Cell(4, 1, $this->infoRepo[$i]["tipo_examen"], 1, 0, 'C');
+			$pdf->Cell(3, 1, $this->infoRepo[$i]["calificacion"], 1, 0, 'C');
+
+		}
+
+		$pdf->Output();
 	}
 
 	public function cargaVInscrGrupo(){ //Funcion para hacer una inscripción a un grupo
@@ -591,10 +647,14 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	}
 
 	public function fRepoMateriasProfe(){ //Reporte de Materias-Profesor (Administrador)
+		
+
 		$period = $this->input->post('periodo'); //Se obtiene el periodo del que se quiere la info
 		$_SESSION["S_period2"]=$period;
 		$this->materiasPeriod = $this->ModelosP->ObtenMateriasPorfes($period);			
 		$this->load->view('VRepoMateriasProfe', $this->materiasPeriod);
+
+		
 	}
 
 	public function fPDFMateriasProfesPeriodo(){
@@ -628,7 +688,11 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$pdf->Output();
 	}
 
-	public function fRepoSalon(){ //Reporte de Salon (Administrador)
+	public function fRepoSalon(){
+
+
+
+		 //Reporte de Salon (Administrador)
 		$period = $this->input->post('periodo2'); //Se obtiene el periodo del que se quiere la info
 		$_SESSION["S_period3"]=$period;
 		$this->salonesPeriod = $this->ModelosP->ObtenInfoSalones($period);
@@ -638,6 +702,10 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 			$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->salonesPeriod[$i]['id_grupo']));
 		}
 		$this->load->view('VRepoSalones', $this->salonesPeriod, $this->infoH);
+
+
+
+
 	}
 
 	public function fPDFRepoSalon(){ //Genera el PDF del reporte de arriba xD
@@ -687,24 +755,41 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	}
 	public function obtenAlumnos(){
-		$profe = $this->input->post("profesor");
-		$datos = $this->input->post("datosProfe");
+		echo "LLgemos";
+		die();
+		$profe = $this->input->post('profesor');
+		$datos = $this->input->post('datosProfe');
 		$id_grupo = explode("-", $datos);
 		$nombreGrupo = $id_grupo[1];
 		$id_grupos = $id_grupo[0];
+
 		//$respuesta = $this->ModelosP->ObtenAlumnosProfeGrupo($profe, $datos);//en el modelo tenemos que regresar el valor como objeto; $respuetsa->result
 		//echo json_encode($respuesta);
-		$id_materia = $this->ModelosP->buscaidGrupo($nombreGrupo,$profe);
 		$id_profesor = $this->ModelosP->ObtenIdProfe($profe);
-		$id_alumnos = $this->ModelosP->buscaIdAlumnos($id_materia,$profe);
+		$id_materia = $this->ModelosP->buscaidGrupo($nombreGrupo,$id_profesor);
+		
+		$id_alumnos = $this->ModelosP->buscaIdAlumnos($id_materia);
 		$alumnos = $this->ModelosP->buscaAlumosGrupo($id_profesor,$id_grupos);
-
-
-		echo json_encode($alumnos);
+		echo "va";
+		//echo (json_encode($profe));
 		//$datos['seleccion'] obtiene el valor ese merengues
 	}
-	public function ingresaCalificaciones(){
+
+	public function agregaCalificaciones(){
+		$tipo_examen = $this->input->post("examen");
+		$calificacion = $this->input->post("calificacion");
+		$id_alumno = $this->input->post("id_alumno");
+		$datos = $this->input->post("id_grupo");
+		var_dump(count($id_alumno));
+		for ($i=0; $i <sizeof($id_alumno) ; $i++) { 
+			 $id_inscripcion[$i] = $this->ModelosP->buscaIdInscripcion($id_alumno[$i],$datos);
+		}
 		
+		for ($i=0; $i < sizeof($id_inscripcion) ; $i++) {
+			$respuesta[$i]=$this->ModelosP->ingresaCalificacion($calificacion[$i],$tipo_examen[$i],$id_inscripcion[$i]);
+		}
+		echo "Trabajo hecho";
+		$this->load->view('Vprofesor');
 	}
 
 }
