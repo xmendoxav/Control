@@ -655,6 +655,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	public function fPDFMateriasProfesPeriodo(){
 		//Obtener nuevamente la información que se usará en el reporte
+		//te pdio
 		$this->materiasPeriod = $this->ModelosP->ObtenMateriasPorfes($_SESSION["S_period2"]);
 		$encabezado = 'Reporte Materias/Profesores, Periodo '.$_SESSION["S_period2"];
 		//Generar el PDF
