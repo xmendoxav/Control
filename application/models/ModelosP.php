@@ -314,9 +314,14 @@
 		}
 
 		public function buscaAlumosGrupo($idProfe,$id_grupo){
-			$query ="SELECT alumno.nom_alumno, alumno.id_alumno, grupo.id_grupo FROM alumno, ins_alu_grupo, grupo, profesor WHERE alumno.id_alumno = ins_alu_grupo.id_alumno AND grupo.id_profesor = profesor.id_profesor AND grupo.id_grupo = ins_alu_grupo.id_grupo AND profesor.id_profesor = '".$idProfe."'AND ins_alu_grupo."."id_grupo = '".$id_grupo."'";
+			$query ="SELECT alumno."."nom_alumno, alumno."."id_alumno, grupo."." FROM alumno, ins_alu_grupo, grupo, profesor WHERE alumno."."id_alumno = ins_alu_grupo."."id_alumno AND grupo."."id_profesor = profesor."."id_profesor AND grupo."."id_grupo = ins_alu_grupo."."id_grupo AND profesor."."id_profesor = '".$idProfe."' AND ins_alu_grupo."."id_grupo = '".$id_grupo."'";
 			$resultado = ($this->db->query($query)->result_array());
 
+
+		}
+
+
+			return $resultado;
 		}
 
 		public function ObtenAlumnosGrupo($grupo){ //Obtiene los alumnos de un grupo especifico
@@ -326,6 +331,7 @@
 			return $resultado;
 		}
 		
+
 		/**public function buscaAlumosGrupo($idProfe){
 			$query ="SELECT alumno.nom_alumno, alumno.id_alumno FROM alumno, ins_alu_grupo, grupo, profesor WHERE alumno.id_alumno = ins_alu_grupo.id_alumno AND grupo.id_profesor = profesor.id_profesor AND grupo.id_grupo = ins_alu_grupo.id_grupo AND profesor.id_profesor = '".$idProfe."'";
 			$resultado = ($this->db->query($query)->row_array());
@@ -334,17 +340,18 @@
 			return $resultado;
 		}*/
 
-
 		public function buscaIdInscripcion($id_alumno,$id_grupo){
 			$query = "select id_inscripcion FROM ins_alu_grupo WHERE id_alumno = '".$id_alumno."' and id_grupo = '".$id_grupo."'";
-			$resultado = ($this->db->query($query)->result_array());
+			$resultado = ($this->db->query($query)->row_array());
+			$resultado = $resultado['id_inscripcion'];
 			return $resultado;
 		}
 
-		public function ingresaCalificacion($calificacion,$id_tipo_examen,$id_inscripcion){
-			$query = "INSERT INTO calificacion (id_calificacion, calificacion, id_tipo_examen, id_inscripcion) VALUES (NULL, '".$calificacion."', '".$id_tipo_examen."', '".$id_inscripcion."');";
+		public function ingresaCalificacion($calificacion,$tipo_examen,$id_inscripcion){
+			
+			$query = "INSERT INTO calificacion (id_calificacion, calificacion, id_tipo_examen, id_inscripcion) VALUES (NULL, '".$calificacion."', '".$tipo_examen."', '".$id_inscripcion."')";
 			$this->db->query($query);
-			return $this->db->query($query);
+			
 		}
 	}
 ?>

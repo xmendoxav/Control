@@ -134,27 +134,30 @@ $(document).ready(function(){
 function mostrarAlumnos(){
 	var datos = document.getElementById('seleccion').value;
 	var profe = document.getElementById('profe').value;
+
 	$.ajax({
 		url:"http://localhost/Proyecto/Control/index.php/ControladorPrincipal/obtenAlumnos",
 		type:"POST",
 		data:{datosProfe:datos, profesor:profe}, 
 		success: function(respuesta){
+			//alert(respuesta);
 			respuestaGlobal = respuesta;
+
 			registros = eval(respuesta);
 
 			if (registros!=""){
 
 			
-			html = "<table class='table table-responsive table-bordered'><thead>";
+			html = "<form action = "+"agregaCalificaciones"+" method="+"post"+"><table class='table table-responsive table-bordered'><thead>";
 			html +="<tr><th align="+"center"+">Nombre</th><th>Numero de cuenta</th><th>Examen</th><th>Calificacion</th></th>";//nombre de los campos a mostrar
 			html += "</thead><tbody>";
 			for (var i=0; i<registros.length; i++){
-				html+="<tr> <td>"+registros[i]["nom_alumno"]+"</td>  <td>"+registros[i]["id_alumno"]+"</td><td><select id= "+"examen "+"name="+"examen[] "+" class="+"form-control"+"><option id="+"tipo_examen "+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"1"+">Ordinario</option> <option id="+"tipo_examen"+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"2"+">Extra</option><option id="+"tipo_examen"+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"3"+">Titulo</option> <td><input type="+"text"+" name= "+"calificacion[]"+" id="+"calificacion"+" class="+"form-control"+"></td> ";
+				html+="<tr> <input type = "+ "text "+" id  = "+"id_alumno "+" name = "+"id_alumno[] "+" value = "+registros[i]["id_alumno"]+" style = "+"visibility:hidden"+"> <input type = "+ "text "+" id  = "+"id_grupo "+" name = "+"id_grupo"+" value = "+registros[i]["id_grupo"]+" style = "+"visibility:hidden"+"> <td>"+registros[i]["nom_alumno"]+"</td>  <td>"+registros[i]["id_alumno"]+"</td><td><select id= "+"examen "+"name="+"examen[] "+" class="+"form-control"+"><option id="+"tipo_examen "+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"1"+">Ordinario</option> <option id="+"tipo_examen"+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"2"+">Extra</option><option id="+"tipo_examen"+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"3"+">Titulo</option> <td><input type="+"text"+" name= "+"calificacion[]"+" id="+"calificacion"+" class="+"form-control"+"></td> ";
 			}}else{
 				html+="<tr> <td>No se encontraron registros</td> </tr>";
 			}
 
-			html += "</body></table><input type = "+"button"+" value = "+"Guardar"+" class = "+"form-control"+" onclick = "+"agregaralumno()"+"> </form>";
+			html += "</body></table><input type = "+"submit"+" value = "+"Guardar"+" class = "+"form-control"+" > </form>";
 			$("#muestraDatos").html(html);
 
 		}
