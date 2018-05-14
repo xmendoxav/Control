@@ -157,7 +157,7 @@ function mostrarAlumnos(){
 				html+="<tr> <td>No se encontraron registros</td> </tr>";
 			}
 
-			html += "</body></table><input type = "+"submit"+" value = "+"Guardar"+" class = "+"form-control"+" > </form>";
+			html += "</body></table><input type = "+"submit"+" value = "+"Guardar"+" class = "+"form-control"+" > <form action="+"fcargaVistaProfe"+" method="+"post"+"><input type="+"submit"+" class = "+"form-control"+" ></form> </form>";
 			$("#muestraDatos").html(html);
 
 		}

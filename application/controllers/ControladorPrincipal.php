@@ -102,7 +102,9 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 			}
 		}
 	}
-
+	public function fcargaVistaProfe(){
+		$this->load->view('Vprofesor');
+	}
 	public function fCargaVadministrador(){ //Funcion para cargar la vista de adminsitrador
 		$this->load->view('Vadministrador'); //Cargar vista de  Administrador
 	}
