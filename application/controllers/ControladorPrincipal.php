@@ -94,7 +94,8 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 				if($tUser == 'Administrador'){
 					$this->load->view('Vadministrador'); //Cargar vista de  Administrador
 				}elseif($tUser == 'Docente') {
-					$this->load->view('Vprofesor'); //Cargar vista de  profesor
+					$this->grupos = $this->ModelosP->obtenInfoGruposProfe($_SESSION["S_usr"]);
+					$this->load->view('Vprofesor',$this->grupos); //Cargar vista de  profesor
 				}else{
 					$this->load->view('Valumno'); //Cargar vista de Alumno
 				}
@@ -109,6 +110,11 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
   public function fCargaVAlu(){ //Funcion para cargar la vista de adminsitrador
 		$this->load->view('Valumno'); //Cargar vista de  Administrador
+	}
+
+	public function fCargaVProfe(){
+		$this->grupos = $this->ModelosP->obtenInfoGruposProfe($_SESSION["S_usr"]);
+		$this->load->view('Vprofesor'); //Cargar vista de  profesor
 	}
 
 

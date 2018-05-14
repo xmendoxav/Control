@@ -41,7 +41,7 @@
 		<input type="submit" value="Generar PDF" style="margin-top: 40px">
 	</form>
 
-	<form action="fCargaVadministrador" method="post">
+	<form action="fCargaVProfe" method="post">
 		<input type="submit" value="Regresar" style="margin-top: 20px; width: 175px;" >
 	</form>
 
