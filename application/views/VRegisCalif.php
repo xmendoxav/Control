@@ -139,10 +139,33 @@ function mostrarAlumnos(){
 		type:"POST",
 		data:{datosProfe:datos, profesor:profe}, 
 		success: function(respuesta){
-			alert(respuesta);
+			respuestaGlobal = respuesta;
+			registros = eval(respuesta);
+
+			if (registros!=""){
+
+			
+			html = "<table class='table table-responsive table-bordered'><thead>";
+			html +="<tr><th align="+"center"+">Nombre</th><th>Numero de cuenta</th><th>Examen</th><th>Calificacion</th></th>";//nombre de los campos a mostrar
+			html += "</thead><tbody>";
+			for (var i=0; i<registros.length; i++){
+				html+="<tr> <td>"+registros[i]["nom_alumno"]+"</td>  <td>"+registros[i]["id_alumno"]+"</td><td><select id= "+"examen "+"name="+"examen[] "+" class="+"form-control"+"><option id="+"tipo_examen "+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"1"+">Ordinario</option> <option id="+"tipo_examen"+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"2"+">Extra</option><option id="+"tipo_examen"+" name="+"tipo_examen"+" class="+"form-control"+" value = "+"3"+">Titulo</option> <td><input type="+"text"+" name= "+"calificacion[]"+" id="+"calificacion"+" class="+"form-control"+"></td> ";
+			}}else{
+				html+="<tr> <td>No se encontraron registros</td> </tr>";
+			}
+
+			html += "</body></table><input type = "+"button"+" value = "+"Guardar"+" class = "+"form-control"+" onclick = "+"agregaralumno()"+"> </form>";
+			$("#muestraDatos").html(html);
+
 		}
 	})
 
+}
+function agregaralumno(){
+	//alert(respuestaGlobal);d
+	var examen = document.getElementById('examen').value;
+	var calificacion = document.getElementById('calificacion').value;
+	alert(calificacion);
 }
 </script>
 <body>
@@ -166,18 +189,14 @@ function mostrarAlumnos(){
 					<?php } ?>
   		     	</select>
   		     	<td><input type="button" value="Desplegar" id="hola" class="form-control" onclick="mostrarAlumnos()" /></td>
-  		     	<td><input type="button" value="Desplegar" id="boton" class="form-control" /></td>
+  		     	
 	        </form>
   	  		</td>
   	  	</tr>
   	  </table>
 </div>
-<div id="resultado">pruebas</div>
-<div id="resultado2">pruebas</div>
-<table></table>
-
-
-
 </body>
+<div id="muestraDatos"></div>
+
 </html>
 

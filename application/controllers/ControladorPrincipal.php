@@ -529,15 +529,20 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$datos = $this->input->post("datosProfe");
 		$id_grupo = explode("-", $datos);
 		$nombreGrupo = $id_grupo[1];
+		$id_grupos = $id_grupo[0];
 		//$respuesta = $this->ModelosP->ObtenAlumnosProfeGrupo($profe, $datos);//en el modelo tenemos que regresar el valor como objeto; $respuetsa->result
 		//echo json_encode($respuesta);
 		$id_materia = $this->ModelosP->buscaidGrupo($nombreGrupo,$profe);
 		$id_profesor = $this->ModelosP->ObtenIdProfe($profe);
 		$id_alumnos = $this->ModelosP->buscaIdAlumnos($id_materia,$profe);
-		$alumnos = $this->ModelosP->buscaAlumosGrupo($id_profesor);
+		$alumnos = $this->ModelosP->buscaAlumosGrupo($id_profesor,$id_grupos);
 
-		echo var_dump($alumnos);
+
+		echo json_encode($alumnos);
 		//$datos['seleccion'] obtiene el valor ese merengues
+	}
+	public function ingresaCalificaciones(){
+		
 	}
 
 }
