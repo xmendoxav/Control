@@ -22,6 +22,14 @@ class PDF extends FPDF{ //Clase que extiende de FPDF,
 		//Para UBUNTU:
 		$this->Image('/opt/lampp/htdocs/fpdf/footerUaemex.jpeg',2,25,15,3);
 	}*/
+	function SetDash($black=false, $white=false)
+    {
+        if($black and $white)
+            $s=sprintf('[%.3f %.3f] 0 d', $black*$this->k, $white*$this->k);
+        else
+            $s='[] 0 d';
+        $this->_out($s);
+    }
 
 }
 class ControladorPrincipal extends CI_Controller { //Definición principal
@@ -96,9 +104,10 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 				}elseif($tUser == 'Docente') {
 					$this->grupos = $this->ModelosP->obtenInfoGruposProfe($_SESSION["S_usr"]);
 
+
 					$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]); //Obtiene el id del profe (usando su nombre)
-					$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe);
-					$this->load->view('Vprofesor', $this->grupos, $this->materiasProfe); //Cargar vista de  profesor
+					//$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe);
+					//$this->load->view('Vprofesor', $this->grupos, $this->materiasProfe); //Cargar vista de  profesor
 
 					$this->load->view('Vprofesor',$this->grupos); //Cargar vista de  profesor
 
@@ -110,7 +119,9 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		}
 	}
 	public function fcargaVistaProfe(){
-		$this->load->view('Vprofesor');
+		$this->grupos = $this->ModelosP->obtenInfoGruposProfe($_SESSION["S_usr"]);
+		$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]);
+		$this->load->view('Vprofesor', $this->grupos);
 	}
 	public function fCargaVadministrador(){ //Funcion para cargar la vista de adminsitrador
 		$this->load->view('Vadministrador'); //Cargar vista de  Administrador
@@ -127,7 +138,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 					$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe);
 		$this->load->view('Vprofesor', $this->grupos);
 
-		$this->load->view('Vprofesor'); //Cargar vista de  profesor
+		//$this->load->view('Vprofesor'); //Cargar vista de  profesor
 
 	}
 
@@ -261,10 +272,10 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	public function fcargaVregistroCalif(){ //Funcion para cargar la vista para registrar calificaciones
 		//La vista de registro de calificaciones necesita de varios parametros. Primero obtener esos parametros.
-		$grupo = $this->input->post('mater');
+		//$grupo = $this->input->post('mater');
 		
-		$this->alumnos = $this->ModelosP->ObtenAlumnosGrupo($grupo);
-		die();
+		//$this->alumnos = $this->ModelosP->ObtenAlumnosGrupo($grupo);
+		
 		$idProfe = $this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]); //Obtiene el id del profe (usando su nombre)
 		$this->materiasProfe = $this->ModelosP->obtenMaterias2($idProfe); //Obtiene las materias de un profe
 		//var_dump($materiasProfe);
@@ -290,7 +301,9 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		//Nombre, materias, profesor, grupo, periodo, plan estudio, horario, fecha
 
 	    //Obtener las materias y la info de ellas
-	    $this->materiasProfe = $this->ModelosP->ObtenAllMateriasProfe($_SESSION["S_usr"]);
+
+	    $this->materiasProfe = $this->ModelosP->ObtenAllMateriasProfe($this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]));
+	    
 	  
 	    if (count($this->materiasProfe) == 0) {
 	    	//Indicar que ese alukno no tiene inscripciones a ese semestre
@@ -310,14 +323,19 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		//Obtener nuevamente la información que se usará en el reporte
 		$nombre ="Profesor: ".$_SESSION["S_usr"];
 
-    	$this->materiasProfe = $this->ModelosP->ObtenAllMateriasProfe($_SESSION["S_usr"]);
+    	$this->materiasProfe = $this->ModelosP->ObtenAllMateriasProfe($this->ModelosP->ObtenIdProfe($_SESSION["S_usr"]));
+    	for ($i=0; $i < count($this->materiasProfe); $i++) {
+				$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->materiasProfe[$i]['id_grupo']));
+				$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->materiasProfe[$i]['id_grupo']));
+				$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->materiasProfe[$i]['id_grupo']));
+			}
     	//var_dump($this->tiraMaterias[0]['id_grupo']);
     	//die();
-    	for ($i=0; $i < count($this->materiasProfe); $i++) {
+    	/*for ($i=0; $i < count($this->materiasProfe); $i++) {
 			$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->materiasProfe[$i]['id_grupo']));
 			$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->materiasProfe[$i]['id_grupo']));
 			$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->materiasProfe[$i]['id_grupo']));
-		}
+		}*/
 		//Generar el PDF
 		$pdf = new PDF('P', 'cm', 'a4');
 		$pdf->AddPage();
@@ -341,62 +359,59 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		for ($i=0; $i < count($this->materiasProfe); $i++) {
 			$pdf->Cell(6, 1, $this->materiasProfe[$i]["nom_materia"], 1, 0, 'C');
 			$pdf->Cell(3, 1, $this->materiasProfe[$i]["id_grupo"], 1, 0, 'C');
-			$pdf->Cell(5, 1, $this->materiasProfe[$i]["id_salon"], 1, 1, 'C');
+			$pdf->Cell(5, 1, $this->materiasProfe[$i]["id_salon"], 1, 0, 'C');
+			for ($j=0; $j < count($this->infoH[$i]['dias']) ; $j++) { 
+				$StringHorario = $this->infoH[$i]['dias'][$j]."--".$this->infoH[$i]['h_i'][$j]."---".$this->infoH[$i]['h_f'][$j];
+				if ($j == 0) {
+					$esp = 5;
+				}else{
+					$esp = 33.55;
+				}
+				$pdf->Cell($esp, 1, $StringHorario, 0, 1, 'C');
+			}
 		}
 
 		$pdf->Output();
 	}
 
 	public function flistaAlumnosGrupo(){ //Funcion para listar los ALUMNOS y GRUPOS
+		//Nombre, materias, profesor, grupo, periodo, plan estudio, horario, fecha
+
+	    //Obtener las materias y la info de ellas
+	    $grupo = $this->input->post('grupo');
+		$_SESSION['group'] = $grupo;
+		//Obtener los alumnos de ese grupo
+		$this->alumnos = $this->ModelosP->ObtenAlumnosGrupo($grupo);
+		
+		//Cargar la vista para desplegar el reporte (Desde la vista se genera el PDF)
+		$this->load->view('VRepoAlumnosGrupo', $this->alumnos);
 
 	}
 
-	public function fRepoCalif(){ //Funcion para reporte de CALIFICACIONES (EL QUE GENERA EL PROFE)
-		$grupo = $this->input->post('grupo2');
-		$_SESSION['group2'] = $grupo;
-		$this->period = $this->input->post('period');
-		$_SESSION['periodoo'] = $this->period;
-		$tExa = $this->input->post('tExa');
-
-		$this->materia = $this->ModelosP->ObtenMateria($grupo);
-		$this->infoRepo = $this->ModelosP->ObtenCalifAlumnos($grupo, $this->period);
-		//var_dump($this->materia, $this->infoRepo);
-		//die();
-		$this->load->view('VRepoCalif', $this->materia, $this->infoRepo, $this->period);
-	}
-
-	public function fPDFCalifAlumnos(){ //Hace el PDF de lo de arriba
-		$this->materia = $this->ModelosP->ObtenMateria($_SESSION['group2']);
-		$this->infoRepo = $this->ModelosP->ObtenCalifAlumnos($_SESSION['group2'], $_SESSION['periodoo']);
-
-		//Generar el PDF 
-		$nombre = "Calificaciones del Grupo: ".$_SESSION['group2'].", Materia: ".$this->materia['nom_materia'].", Periodo: ".$_SESSION['periodoo'];
+	public function fPDFAlumnosGrupo(){ //Genera el PDF del reporte de arriba xD
+		$this->alumnos = $this->ModelosP->ObtenAlumnosGrupo($_SESSION['group']);
+		//Crear el PDF
+		$titulo = "Alumnos del grupo ".$_SESSION['group']." del Profesor: ".$_SESSION['S_usr'];
 
 		$pdf = new PDF('P', 'cm', 'a4');
 		$pdf->AddPage();
-		
 		$pdf->SetFont('Times','BU',18);
-		$pdf->Cell(19,1,$nombre,0,0,'C');
+		$pdf->Cell(19,1,$titulo,0,0,'C');
 		$pdf->Ln(1);
 		$pdf->Ln(1);
-		$pdf->SetFont('Times','B',14);
+		$pdf->SetFont('Times','B',16);
 		$pdf->SetDrawColor(0,80,180);
 		$pdf->SetFillColor(430,430,10);
 		$pdf->SetLineWidth(0.08);
 		$pdf->Cell(3, 1, "Id Alumno", 1, 0, 'C');
-		$pdf->Cell(5, 1, "Nombre Alumno", 1, 0, 'C');
-		$pdf->Cell(4, 1, "Tipo Examen", 1, 0, 'C');
-		$pdf->Cell(3, 1, "Calificacion", 1, 0, 'C');
+		$pdf->Cell(6, 1, "Nombre Alumno", 1, 0, 'C');
 
 		$pdf->Ln();
 		$pdf->SetFont('Times','',12);
 
-		for ($i=0; $i < count($this->infoRepo); $i++) {
-			$pdf->Cell(3, 1, $this->infoRepo[$i]["id_alumno"], 1, 0, 'C');
-			$pdf->Cell(5, 1, $this->infoRepo[$i]["nom_alumno"], 1, 0, 'C');
-			$pdf->Cell(4, 1, $this->infoRepo[$i]["tipo_examen"], 1, 0, 'C');
-			$pdf->Cell(3, 1, $this->infoRepo[$i]["calificacion"], 1, 0, 'C');
-
+		for ($i=0; $i < count($this->alumnos); $i++) {
+			$pdf->Cell(3, 1, $this->alumnos[$i]["id_alumno"], 1, 0, 'C');
+			$pdf->Cell(6, 1, $this->alumnos[$i]["nom_alumno"], 1, 1, 'C');
 		}
 
 		$pdf->Output();
@@ -438,7 +453,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$pdf->Cell(3, 1, "Id Alumno", 1, 0, 'C');
 		$pdf->Cell(5, 1, "Nombre Alumno", 1, 0, 'C');
 		$pdf->Cell(4, 1, "Tipo Examen", 1, 0, 'C');
-		$pdf->Cell(3, 1, "Calificacion", 1, 0, 'C');
+		$pdf->Cell(3, 1, "Calificacion", 1, 1, 'C');
 
 		$pdf->Ln();
 		$pdf->SetFont('Times','',12);
@@ -447,7 +462,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 			$pdf->Cell(3, 1, $this->infoRepo[$i]["id_alumno"], 1, 0, 'C');
 			$pdf->Cell(5, 1, $this->infoRepo[$i]["nom_alumno"], 1, 0, 'C');
 			$pdf->Cell(4, 1, $this->infoRepo[$i]["tipo_examen"], 1, 0, 'C');
-			$pdf->Cell(3, 1, $this->infoRepo[$i]["calificacion"], 1, 0, 'C');
+			$pdf->Cell(3, 1, $this->infoRepo[$i]["calificacion"], 1, 1, 'C');
 
 		}
 
@@ -542,23 +557,34 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$pdf->Cell(19,1,'Materias  '.$_SESSION["S_period"],0,0,'C');
 		$pdf->Ln(1);
 		$pdf->Ln(1);
-		$pdf->SetFont('Times','B',16);
+		$pdf->SetFont('Times','B',14);
 		$pdf->SetDrawColor(0,80,180);
 		$pdf->SetFillColor(430,430,10);
 		$pdf->SetLineWidth(0.08);
-		$pdf->Cell(6, 1, "Nombre", 1, 0, 'C');
+		$pdf->Cell(6, 1, "Materia", 1, 0, 'C');
 		$pdf->Cell(5, 1, "Profesor", 1, 0, 'C');
-		$pdf->Cell(3, 1, "Grupo", 1, 0, 'C');
-		$pdf->Cell(5, 1, "Salón", 1, 0, 'C');
+		$pdf->Cell(2.5, 1, "id grupo", 1, 0, 'C');
+		$pdf->Cell(2, 1, "Salon", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Horario", 1, 0, 'C');
 
 		$pdf->Ln();
-		$pdf->SetFont('Times','',12);
+		$pdf->SetFont('Times','',10);
 
 		for ($i=0; $i < count($this->tiraMaterias); $i++) {
 			$pdf->Cell(6, 1, $this->tiraMaterias[$i]["nom_materia"], 1, 0, 'C');
 			$pdf->Cell(5, 1, $this->tiraMaterias[$i]["nom_profesor"], 1, 0, 'C');
-			$pdf->Cell(3, 1, $this->tiraMaterias[$i]["id_grupo"], 1, 0, 'C');
-			$pdf->Cell(5, 1, $this->tiraMaterias[$i]["id_salon"], 1, 1, 'C');
+			$pdf->Cell(2.5, 1, $this->tiraMaterias[$i]["id_grupo"], 1, 0, 'C');
+			$pdf->Cell(2, 1, $this->tiraMaterias[$i]["id_salon"], 1, 0, 'C');
+
+			for ($j=0; $j < count($this->infoH[$i]['dias']) ; $j++) { 
+				$StringHorario = $this->infoH[$i]['dias'][$j]."--".$this->infoH[$i]['h_i'][$j]."---".$this->infoH[$i]['h_f'][$j];
+				if ($j == 0) {
+					$esp = 5;
+				}else{
+					$esp = 35;
+				}
+				$pdf->Cell($esp, 1, $StringHorario, 0, 1, 'C');
+			}
 		}
 
 		$pdf->Output();
@@ -600,6 +626,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
     	$this->plan ="Plan: ".$planCarrera['plan_estudio'];
     	$this->carrera ="Carrera: ".$planCarrera['nom_carrera'];
     	$this->tiraMaterias = $this->ModelosP->ObtenAllTiraMaterias($_SESSION["S_usr"]);
+
     	//var_dump($this->tiraMaterias[0]['id_grupo']);
     	//die();
     	for ($i=0; $i < count($this->tiraMaterias); $i++) {
@@ -619,25 +646,41 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$pdf->Cell(19,1,'Rporte Kardex  ',0,0,'C');
 		$pdf->Ln(1);
 		$pdf->Ln(1);
-		$pdf->SetFont('Times','B',16);
+		$pdf->SetFont('Times','B',12);
 		$pdf->SetDrawColor(0,80,180);
 		$pdf->SetFillColor(430,430,10);
 		$pdf->SetLineWidth(0.08);
-		$pdf->Cell(6, 1, "Nombre", 1, 0, 'C');
-		$pdf->Cell(5, 1, "Profesor", 1, 0, 'C');
-		$pdf->Cell(3, 1, "Grupo", 1, 0, 'C');
-		$pdf->Cell(5, 1, "Salón", 1, 0, 'C');
-
+		$pdf->Cell(1.5, 1, "Periodo", 1, 0, 'C');
+		$pdf->Cell(4, 1, "Materia", 1, 0, 'C');
+		$pdf->Cell(2.4, 1, "Profesor", 1, 0, 'C');
+		$pdf->Cell(2, 1, "Calif.", 1, 0, 'C');
+		$pdf->Cell(2.2, 1, "T. Examen", 1, 0, 'C');
+		$pdf->Cell(1.5, 1, "Grupo", 1, 0, 'C');
+		$pdf->Cell(1.5, 1, "Salón", 1, 0, 'C');
+		$pdf->Cell(4,1,"Horario",1,1,'C');
 		$pdf->Ln();
-		$pdf->SetFont('Times','',12);
+		$pdf->SetFont('Times','',9);
 
 		for ($i=0; $i < count($this->tiraMaterias); $i++) {
-			$pdf->Cell(6, 1, $this->tiraMaterias[$i]["nom_materia"], 1, 0, 'C');
-			$pdf->Cell(5, 1, $this->tiraMaterias[$i]["nom_profesor"], 1, 0, 'C');
-			$pdf->Cell(3, 1, $this->tiraMaterias[$i]["id_grupo"], 1, 0, 'C');
-			$pdf->Cell(5, 1, $this->tiraMaterias[$i]["id_salon"], 1, 1, 'C');
-		}
+			$pdf->Cell(1.5, 1, $this->tiraMaterias[$i]["periodo"], 1, 0, 'C');
+			$pdf->Cell(4, 1, $this->tiraMaterias[$i]["nom_materia"], 1, 0, 'C');
+			$pdf->Cell(2.4, 1, $this->tiraMaterias[$i]["nom_profesor"], 1, 0, 'C');
+			$pdf->Cell(2, 1, $this->tiraMaterias[$i]["calificacion"], 1, 0, 'C');
+			$pdf->Cell(2.2, 1, $this->tiraMaterias[$i]["tipo_examen"], 1, 0, 'C');
+			$pdf->Cell(1.5, 1, $this->tiraMaterias[$i]["id_grupo"], 1, 0, 'C');
+			$pdf->Cell(1.5, 1, $this->tiraMaterias[$i]["id_salon"], 1, 0, 'C');
 
+			for ($j=0; $j < count($this->infoH[$i]['dias']) ; $j++) { 
+				$StringHorario = $this->infoH[$i]['dias'][$j]."--".$this->infoH[$i]['h_i'][$j]."---".$this->infoH[$i]['h_f'][$j];
+				if ($j == 0) {
+					$esp = 4;
+				}else{
+					$esp = 34;
+				}
+				$pdf->Cell($esp, 1, $StringHorario, 0, 1, 'C');
+			}
+
+		}
 		$pdf->Output();
 	}
 
@@ -671,16 +714,17 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$pdf->SetLineWidth(0.08);
 		$pdf->Cell(6, 1, "Id Materia", 1, 0, 'C');
 		$pdf->Cell(5, 1, "Materia", 1, 0, 'C');
-		$pdf->Cell(3, 1, "Profesor", 1, 0, 'C');
-		$pdf->Cell(5, 1, "Grupo", 1, 0, 'C');
+		$pdf->Cell(5, 1, "Profesor", 1, 0, 'C');
+		$pdf->Cell(2, 1, "Grupo", 1, 0, 'C');
 		$pdf->Ln();
 		$pdf->SetFont('Times','',12);
 
 		for ($i=0; $i < count($this->materiasPeriod); $i++) {
+
 			$pdf->Cell(6, 1, $this->materiasPeriod[$i]["id_materia"], 1, 0, 'C');
 			$pdf->Cell(5, 1, $this->materiasPeriod[$i]["nom_materia"], 1, 0, 'C');
-			$pdf->Cell(3, 1, $this->materiasPeriod[$i]["nom_profesor"], 1, 0, 'C');
-			$pdf->Cell(5, 1, $this->materiasPeriod[$i]["id_grupo"], 1, 1, 'C');
+			$pdf->Cell(5, 1, $this->materiasPeriod[$i]["nom_profesor"], 1, 0, 'C');
+			$pdf->Cell(2, 1, $this->materiasPeriod[$i]["id_grupo"], 1, 1, 'C');
 		}
 		$pdf->Output();
 	}
@@ -711,6 +755,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 	public function fPDFRepoSalon(){ //Genera el PDF del reporte de arriba xD
 		$this->salonesPeriod = $this->ModelosP->ObtenInfoSalones($_SESSION["S_period3"]);
 		for ($i=0; $i < count($this->salonesPeriod); $i++) {
+			
 			$this->infoH[$i]['dias'] = explode(",",$this->ModelosP->ObtenDiasH($this->salonesPeriod[$i]['id_grupo']));
 			$this->infoH[$i]['h_i'] = explode(",",$this->ModelosP->ObtenH_I($this->salonesPeriod[$i]['id_grupo']));
 			$this->infoH[$i]['h_f'] = explode(",",$this->ModelosP->ObtenH_F($this->salonesPeriod[$i]['id_grupo']));
@@ -736,6 +781,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$pdf->SetFont('Times','',12);
 
 		for ($i=0; $i < count($this->salonesPeriod); $i++) {
+
 			$pdf->Cell(2, 1, $this->salonesPeriod[$i]["id_salon"], 1, 0, 'C');
 			$pdf->Cell(5, 1, $this->salonesPeriod[$i]["nom_materia"], 1, 0, 'C');
 			$pdf->Cell(2, 1, $this->salonesPeriod[$i]["id_grupo"], 1, 0, 'C');
@@ -756,8 +802,7 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 
 	}
 	public function obtenAlumnos(){
-		echo "LLgemos";
-		die();
+	
 		$profe = $this->input->post('profesor');
 		$datos = $this->input->post('datosProfe');
 		$id_grupo = explode("-", $datos);
@@ -772,7 +817,6 @@ class ControladorPrincipal extends CI_Controller { //Definición principal
 		$id_alumnos = $this->ModelosP->buscaIdAlumnos($id_materia);
 		$alumnos = $this->ModelosP->buscaAlumosGrupo($id_profesor,$id_grupos);
 
-		echo "va";
 		//echo (json_encode($profe));
 
 
