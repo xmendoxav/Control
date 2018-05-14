@@ -21,6 +21,13 @@
 
 	<form action="flistaAlumnosGrupo" method="post">
 		<input type="submit" value="Lista Alumnos/Grupo" style="margin-top: 10px; width: 175px;" >
+		<select name="grupo"  id="grupo" > 
+			<option selected >Grupo</option>
+			<?php
+				for ($i=0; $i < count($this->grupos); $i++) {?>
+					<option  class="form-control"><?php echo $this->grupos[$i]['id_grupo'] ;?></option>
+			<?php } ?>
+		</select>
 	</form>
 
 	<form action="fRepoCalif" method="post">

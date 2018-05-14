@@ -14,8 +14,11 @@
 	<form action="fPDFKardex" method="post">
 		<table align="center" class="table table-condensed">
 			<tr>
+				<th>Periodo</th>
 				<th>Materia</th>
 				<th>Profesor</th>
+				<th>Calificación</th>
+				<th>Tipo Examen</th>
 				<th>Grupo</th>
 				<th>Salón</th>
 				<th>Horario</th>
@@ -23,9 +26,11 @@
 			<?php
 				for ($i=0; $i < count($this->tiraMaterias); $i++) {?>
 				<tr>
-
+				 <td><?php echo $this->tiraMaterias[$i]['periodo'] ;?> </td>
 				 <td><?php echo $this->tiraMaterias[$i]['nom_materia'] ;?> </td>
          		 <td><?php echo $this->tiraMaterias[$i]['nom_profesor'] ;?> </td>
+         		 <td><?php echo $this->tiraMaterias[$i]['calificacion'] ;?> </td>
+         		 <td><?php echo $this->tiraMaterias[$i]['tipo_examen'] ;?> </td>
 				 <td><?php echo $this->tiraMaterias[$i]['id_grupo'] ;?> </td>
         		 <td><?php echo $this->tiraMaterias[$i]['id_salon'] ;?> </td>
 

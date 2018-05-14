@@ -165,7 +165,7 @@ function agregaralumno(){
 	//alert(respuestaGlobal);d
 	var examen = document.getElementById('examen').value;
 	var calificacion = document.getElementById('calificacion').value;
-	alert(calificacion);
+	alert(examen);
 }
 </script>
 <body>

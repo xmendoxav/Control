@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-05-2018 a las 08:12:29
+-- Tiempo de generación: 12-05-2018 a las 22:12:11
 -- Versión del servidor: 10.1.28-MariaDB
 -- Versión de PHP: 7.1.11
 
@@ -39,7 +39,7 @@ CREATE TABLE `alumno` (
 --
 
 INSERT INTO `alumno` (`id_alumno`, `nom_alumno`, `id_plan`) VALUES
-(1011228, 'Diego Escorza García', 1);
+(1011231, 'DIEGO GARCíA', 2);
 
 -- --------------------------------------------------------
 
@@ -59,25 +59,29 @@ CREATE TABLE `calificacion` (
 --
 
 INSERT INTO `calificacion` (`id_calificacion`, `calificacion`, `id_tipo_examen`, `id_inscripcion`) VALUES
-(1, 78, 1, 1),
-(2, 70, 1, 2),
-(3, 46, 1, 3),
-(4, 64, 2, 3),
-(5, 58, 1, 4),
-(6, 75, 2, 4),
-(7, 56, 1, 5),
-(8, 85, 2, 5),
-(9, 80, 1, 6),
-(10, 85, 1, 7),
-(11, 84, 1, 8),
-(12, 79, 1, 9),
-(13, 91, 1, 10),
-(14, 45, 1, 11),
-(15, 60, 2, 11),
-(16, 80, 1, 12),
-(17, 92, 1, 14),
-(18, 81, 2, 15),
-(19, 60, 1, 17);
+(1, 7.8, 1, 1),
+(2, 8.5, 1, 2),
+(3, 4.5, 1, 3),
+(4, 6, 2, 3),
+(5, 8, 1, 4),
+(6, 8.9, 1, 5),
+(7, 8.2, 1, 6),
+(8, 5.6, 1, 7),
+(9, 7.5, 2, 7),
+(10, 8.4, 1, 8),
+(11, 6, 1, 9),
+(12, 4.7, 1, 10),
+(13, 5.6, 2, 10),
+(14, 8.5, 3, 10),
+(15, 9.5, 1, 11),
+(16, 6, 1, 12),
+(17, 8.5, 1, 13),
+(18, 9.2, 1, 14),
+(19, 7.6, 1, 15),
+(20, 7.3, 1, 16),
+(21, 4.9, 1, 17),
+(22, 5.6, 2, 17),
+(23, 6, 3, 17);
 
 -- --------------------------------------------------------
 
@@ -114,23 +118,23 @@ CREATE TABLE `grupo` (
 --
 
 INSERT INTO `grupo` (`id_grupo`, `id_profesor`, `id_materia`) VALUES
-(1, 1, 'L00062'),
-(2, 1, 'L00070'),
+(1, 1, 'L41013'),
+(2, 2, 'L41011'),
 (3, 3, 'L41001'),
-(4, 2, 'L41002'),
-(5, 4, 'L41003'),
-(6, 5, 'L41010'),
-(7, 6, 'L41011'),
-(8, 7, 'L41012'),
-(9, 8, 'L41013'),
-(10, 9, 'L41020'),
-(11, 10, 'L41032'),
-(12, 11, 'L41053'),
-(13, 13, 'L41054'),
-(14, 13, 'L41065'),
-(15, 12, 'L41104'),
-(16, 13, 'L41104'),
-(17, 15, 'L41109');
+(4, 4, 'L41010'),
+(5, 5, 'L00062'),
+(6, 6, 'L41104'),
+(7, 7, 'L41002'),
+(8, 8, 'L00070'),
+(9, 9, 'L41107'),
+(10, 10, 'L41003'),
+(11, 11, 'L41020'),
+(12, 12, 'L41109'),
+(13, 13, 'L41012'),
+(14, 14, 'L41065'),
+(15, 15, 'L41054'),
+(16, 16, 'L41053'),
+(17, 17, 'L41032');
 
 -- --------------------------------------------------------
 
@@ -140,10 +144,35 @@ INSERT INTO `grupo` (`id_grupo`, `id_profesor`, `id_materia`) VALUES
 
 CREATE TABLE `horario` (
   `id_horario` int(11) NOT NULL,
-  `id_salon` int(11) NOT NULL,
-  `dia_hora` varchar(40) NOT NULL,
-  `id_grupo` int(11) NOT NULL
+  `id_salon` varchar(10) NOT NULL,
+  `dia` varchar(60) NOT NULL,
+  `id_grupo` int(11) NOT NULL,
+  `h_i` varchar(60) NOT NULL,
+  `h_f` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `horario`
+--
+
+INSERT INTO `horario` (`id_horario`, `id_salon`, `dia`, `id_grupo`, `h_i`, `h_f`) VALUES
+(1, 'C401', 'Viernes', 1, '11:00', '01:00'),
+(2, 'I201', 'Lunes,Miercoles,Viernes', 2, '07:00,07:00,07:00', '08:30,08:30,09:00'),
+(3, 'I302', 'Lunes,Miercoles', 3, '07:00,07:00', '09:00,09:00'),
+(4, 'I302', 'Lunes,Miercoles,Viernes', 4, '11:00,11:00,11:00', '01:00,01:00,01:00'),
+(5, 'E201', 'Lunes,Miercoles', 5, '09:00,09:00', '11:00,11:00'),
+(6, 'I302', 'Martes,Jueves', 6, '11:00,11:00', '01:00,01:00'),
+(7, 'I201', 'Martes,Jueves', 7, '13:00,13:00', '15:00,15:00'),
+(8, 'G201', 'Martes,Jueves', 8, '08:00,08:00', '09:30,09:30'),
+(9, 'I203', 'Lunes,Miercoles,Viernes', 9, '13:00,13:00,13:00', '15:00,15:00,15:00'),
+(10, 'I302', 'Martes,Jueves', 10, '12:00,12:00', '13:30,13:30'),
+(11, 'C401', 'Martes,Jueves', 11, '13:00,13:00', '15:00,15:00'),
+(12, 'C401', 'Lunes,Miercoles,Viernes', 12, '13:00,13:00,13:00', '15:00,15:00,15:00'),
+(13, 'I302', 'Martes,Jueves', 13, '10:00,10:00', '12:30,12:30'),
+(14, 'C403', 'Viernes', 14, '12:00', '15:00'),
+(15, 'C406', 'Martes,Jueves', 15, '12:00,12:00', '13:30,13:30'),
+(16, 'C403', 'Lunes,Miercoles,Viernes', 16, '07:00,07:00,07:00', '08:30,08:30,08:30'),
+(17, 'C402', 'Martes,Jueves', 17, '10:00,10:00', '11:30,11:30');
 
 -- --------------------------------------------------------
 
@@ -154,31 +183,32 @@ CREATE TABLE `horario` (
 CREATE TABLE `ins_alu_grupo` (
   `id_inscripcion` int(11) NOT NULL,
   `id_alumno` int(11) NOT NULL,
-  `id_grupo` int(11) NOT NULL
+  `id_grupo` int(11) NOT NULL,
+  `periodo` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `ins_alu_grupo`
 --
 
-INSERT INTO `ins_alu_grupo` (`id_inscripcion`, `id_alumno`, `id_grupo`) VALUES
-(1, 1011228, 1),
-(2, 1011228, 2),
-(3, 1011228, 3),
-(4, 1011228, 4),
-(5, 1011228, 5),
-(6, 1011228, 6),
-(7, 1011228, 7),
-(8, 1011228, 8),
-(9, 1011228, 9),
-(10, 1011228, 10),
-(11, 1011228, 11),
-(12, 1011228, 12),
-(13, 1011228, 13),
-(14, 1011228, 14),
-(15, 1011228, 15),
-(16, 1011228, 16),
-(17, 1011228, 17);
+INSERT INTO `ins_alu_grupo` (`id_inscripcion`, `id_alumno`, `id_grupo`, `periodo`) VALUES
+(1, 1011231, 1, '2018A'),
+(2, 1011231, 2, '2018A'),
+(3, 1011231, 3, '2018A'),
+(4, 1011231, 4, '2018A'),
+(5, 1011231, 5, '2018A'),
+(6, 1011231, 6, '2018A'),
+(7, 1011231, 7, '2018A'),
+(8, 1011231, 8, '2018A'),
+(9, 1011231, 9, '2018A'),
+(10, 1011231, 10, '2018A'),
+(11, 1011231, 11, '2018A'),
+(12, 1011231, 12, '2018A'),
+(13, 1011231, 13, '2018A'),
+(14, 1011231, 14, '2018A'),
+(15, 1011231, 15, '2018A'),
+(16, 1011231, 16, '2018A'),
+(17, 1011231, 17, '2018A');
 
 -- --------------------------------------------------------
 
@@ -206,8 +236,8 @@ INSERT INTO `materia` (`id_materia`, `nom_materia`) VALUES
 ('L41012', 'Programación Estructurada'),
 ('L41013', 'Sociologia'),
 ('L41020', 'Fisica Basica'),
-('L41032', 'Automatas y Lenguajes Formales'),
-('L41053', 'Programacion Avanzada'),
+('L41032', 'Automatas y Lenguajes'),
+('L41053', 'Programación Avanzada'),
 ('L41054', 'Estructura de Datos'),
 ('L41065', 'Logica'),
 ('L41104', 'Ecuaciones Diferenciales'),
@@ -231,7 +261,7 @@ CREATE TABLE `plan_estudio` (
 --
 
 INSERT INTO `plan_estudio` (`id_plan`, `plan_estudio`, `id_carrera`) VALUES
-(1, 'F2', 'ICO');
+(2, 'F2', 'ICO');
 
 -- --------------------------------------------------------
 
@@ -249,23 +279,24 @@ CREATE TABLE `profesor` (
 --
 
 INSERT INTO `profesor` (`id_profesor`, `nom_profesor`) VALUES
-(1, 'Susana'),
-(2, 'Brenda'),
+(1, 'Osorio Chong'),
+(2, 'Zoriel'),
 (3, 'Cecilia'),
-(4, 'Oscar'),
-(5, 'Bernardo'),
-(6, 'Zoriel'),
-(7, 'Chong'),
-(8, 'Maria Rosa'),
-(9, 'Jose Caballero'),
-(10, 'Solis'),
-(11, 'Coria'),
-(12, 'Toche'),
-(13, 'Elfego'),
-(14, 'Felipe Camacho'),
-(15, 'Karla'),
-(18, 'XAVIER ANGELES'),
-(19, 'JORGE');
+(4, 'Bernardo'),
+(5, 'Sussana'),
+(6, 'José Caballero'),
+(7, 'Brenda'),
+(8, 'Andrea'),
+(9, 'Solis'),
+(10, 'Javier'),
+(11, 'María Rosa'),
+(12, 'Coria'),
+(13, 'Trujillo'),
+(14, 'Karen'),
+(15, 'Felipe Camacho'),
+(16, 'Elfego'),
+(17, 'Toche'),
+(18, 'XAVIER ANGELES');
 
 -- --------------------------------------------------------
 
@@ -274,34 +305,26 @@ INSERT INTO `profesor` (`id_profesor`, `nom_profesor`) VALUES
 --
 
 CREATE TABLE `salon` (
-  `id_salon` int(11) NOT NULL,
-  `salon` varchar(10) NOT NULL
+  `id_salon` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `salon`
 --
 
-INSERT INTO `salon` (`id_salon`, `salon`) VALUES
-(1, 'I201'),
-(2, 'I301'),
-(3, 'I302'),
-(4, 'I303'),
-(5, 'I304'),
-(6, 'C401'),
-(7, 'C402'),
-(8, 'C403'),
-(9, 'C404'),
-(10, 'C405'),
-(11, 'C406'),
-(12, 'C407'),
-(13, 'C408'),
-(14, 'E201'),
-(15, 'I202'),
-(16, 'I203'),
-(17, 'I203'),
-(18, 'I204'),
-(19, 'G201');
+INSERT INTO `salon` (`id_salon`) VALUES
+('C401'),
+('C402'),
+('C403'),
+('C405'),
+('C406'),
+('E201'),
+('G201'),
+('I201'),
+('I203'),
+('I302'),
+('I303'),
+('I304');
 
 -- --------------------------------------------------------
 
@@ -341,9 +364,9 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`nombre`, `contraseña`, `tipo`) VALUES
-('Diego Escorza García', '12345', 'Administrador'),
-('XAVIER ANGELES', '12345', 'Docente'),
-('JORGE RODRIGUEZ', '12345', 'Alumno');
+('XAVIDIEGO', '12345', 'Administrador'),
+('DIEGO GARCíA', '12345', 'Alumno'),
+('XAVIER ANGELES', '12345', 'Docente');
 
 --
 -- Índices para tablas volcadas
@@ -383,8 +406,8 @@ ALTER TABLE `grupo`
 --
 ALTER TABLE `horario`
   ADD PRIMARY KEY (`id_horario`),
-  ADD KEY `id_salon` (`id_salon`),
-  ADD KEY `id_grupo` (`id_grupo`);
+  ADD KEY `id_grupo` (`id_grupo`),
+  ADD KEY `id_salon` (`id_salon`);
 
 --
 -- Indices de la tabla `ins_alu_grupo`
@@ -433,13 +456,13 @@ ALTER TABLE `tipo_examen`
 -- AUTO_INCREMENT de la tabla `alumno`
 --
 ALTER TABLE `alumno`
-  MODIFY `id_alumno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1011229;
+  MODIFY `id_alumno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1011232;
 
 --
 -- AUTO_INCREMENT de la tabla `calificacion`
 --
 ALTER TABLE `calificacion`
-  MODIFY `id_calificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_calificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `grupo`
@@ -451,7 +474,7 @@ ALTER TABLE `grupo`
 -- AUTO_INCREMENT de la tabla `horario`
 --
 ALTER TABLE `horario`
-  MODIFY `id_horario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_horario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `ins_alu_grupo`
@@ -463,19 +486,13 @@ ALTER TABLE `ins_alu_grupo`
 -- AUTO_INCREMENT de la tabla `plan_estudio`
 --
 ALTER TABLE `plan_estudio`
-  MODIFY `id_plan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_plan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `profesor`
 --
 ALTER TABLE `profesor`
-  MODIFY `id_profesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
-
---
--- AUTO_INCREMENT de la tabla `salon`
---
-ALTER TABLE `salon`
-  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_profesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_examen`
@@ -511,8 +528,8 @@ ALTER TABLE `grupo`
 -- Filtros para la tabla `horario`
 --
 ALTER TABLE `horario`
-  ADD CONSTRAINT `horario_ibfk_1` FOREIGN KEY (`id_salon`) REFERENCES `salon` (`id_salon`),
-  ADD CONSTRAINT `horario_ibfk_2` FOREIGN KEY (`id_grupo`) REFERENCES `grupo` (`id_grupo`);
+  ADD CONSTRAINT `horario_ibfk_2` FOREIGN KEY (`id_grupo`) REFERENCES `grupo` (`id_grupo`),
+  ADD CONSTRAINT `horario_ibfk_3` FOREIGN KEY (`id_salon`) REFERENCES `salon` (`id_salon`);
 
 --
 -- Filtros para la tabla `ins_alu_grupo`
